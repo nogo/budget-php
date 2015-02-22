@@ -1,0 +1,7 @@
+# Database
+database.adapter: mysql
+database.dsn:     "%app_dir%/database.sdb"
+database.username: ""
+database.password: ""
+
+# API

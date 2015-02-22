@@ -1,0 +1,25 @@
+{
+    "name": "nogo/budget",
+    "description": "Budget management",
+    "require": {
+        "slim/slim": "2.5.*",
+
+        "symfony/yaml": "2.6.*",
+        "aura/sql": "2.*",
+        "aura/sqlquery": "2.*",
+        "aura/filter": "dev-develop-2",
+        "aura/sqlschema": "dev-master",
+        "hampel/json": "~2.0"
+    },
+    "autoload": {
+        "psr-0": {"": "src/"}
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Danilo Kuehn",
+            "email": "dk@nogo-software.de"
+        }
+    ],
+    "minimum-stability": "dev"
+}

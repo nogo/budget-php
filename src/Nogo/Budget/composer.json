@@ -1,0 +1,19 @@
+{
+    "name": "nogo/budget",
+    "description": "Budget management",
+    "require": {
+        "nogo/framework": "dev-master",
+        "nogo/api": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {"": "src/"}
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Danilo Kuehn",
+            "email": "dk@nogo-software.de"
+        }
+    ],
+    "minimum-stability": "dev"
+}
