@@ -6,8 +6,7 @@ CREATE TABLE IF NOT EXISTS `version` (
 CREATE TABLE IF NOT EXISTS `categories` (
   `id` int(11) AUTO_INCREMENT ,
   `name` varchar(255) NOT NULL UNIQUE,
-  `created_at` datetime DEFAULT NOW(),
-  `updated_at` datetime DEFAULT NOW(),
+  `with_description` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -17,9 +16,8 @@ CREATE TABLE IF NOT EXISTS `budget` (
   `type` varchar(255) NOT NULL DEFAULT 'spend',
   `date` datetime DEFAULT NOW(),
   `amount` decimal(15,2) NOT NULL,
-  `special` tinyint(1) DEFAULT 0,
-  `created_at` datetime DEFAULT NOW(),
-  `updated_at` datetime DEFAULT NOW(),
+  `special` tinyint(1) NOT NULL DEFAULT 0,
+  `description` varchar(255),
   PRIMARY KEY (`id`),
   CONSTRAINT FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB;

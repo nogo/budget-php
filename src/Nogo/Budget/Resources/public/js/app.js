@@ -35,11 +35,13 @@
                 m('ul.right.hide-on-med-and-down', [
                     m('li', m('a', { href: '#/expenses' }, [m('i.mdi-navigation-expand-less.left'), 'Ausgaben'])),
                     m('li', m('a', { href: '#/revenue' }, [m('i.mdi-navigation-expand-more.left'), 'Einnahmen'])),
+                    m('li', m('a', { href: '#/categories' }, [m('i.mdi-navigation-expand-more.left'), 'Kategorien'])),
                     m('li', m('a', { href: '#/report' }, [m('i.mdi-av-equalizer.left'), 'Report']))
                 ]),
                 m('ul.side-nav', [
                     m('li', m('a', { href: '#/expenses' }, [m('i.mdi-navigation-expand-less.left'), 'Ausgaben'])),
                     m('li', m('a', { href: '#/revenue' }, [m('i.mdi-navigation-expand-more.left'), 'Einnahmen'])),
+                    m('li', m('a', { href: '#/categories' }, [m('i.mdi-navigation-expand-more.left'), 'Kategorien'])),
                     m('li', m('a', { href: '#/report' }, [m('i.mdi-av-equalizer.left'), 'Report']))
                 ])
             ]);
@@ -102,6 +104,44 @@
     };
 
     var modules = {
+        categories: {
+            controller: function () {
+                var scope = {};
+
+                scope.collection = store.findAll('categories');
+                scope.action = function () {
+                    m.route('/categories/add', {type: scope.type});
+                };
+
+                return scope;
+            },
+            views: {
+                item: function (scope, item) {
+                    return m('li.collection-item', m('div', [
+                        item.name,
+                        m('a.secondary-content', { href: '#' }, m('i.mdi-content-remove'))
+                    ]));
+                },
+                form: function () {
+
+                },
+                button: function (scope) {
+                    return m('.fixed-action-btn', m('a.btn-floating.btn-large.red', { onclick: scope.action }, m('i.large.mdi-content-add')));
+                }
+            },
+            view: function (scope) {
+                return m('header', [
+                    m('h2', [m('i.mdi-navigation-expand-less'), 'Kategorien']),
+                    m('div.row', m('.input-field.col.s12', [
+                        m('input#amount.text-input', {
+                            placeholder: 'Neue Kategorie'
+                        })
+                    ])),
+                    m('ul.collection', scope.collection.map(function (item) { return modules.categories.views.item(scope, item); })),
+                    this.views.button(scope)
+                ]);
+            }
+        },
         expenses: {
             controller: function () {
                 var scope = {
@@ -136,7 +176,7 @@
                 return m('header', [
                     m('h2', [m('i.mdi-navigation-expand-less'), 'Ausgaben']),
                     m('ul.collection', scope.collection.map(function (item) { return modules.expenses.views.item(scope, item); })),
-                    modules.expenses.views.button(scope)
+                    this.views.button(scope)
                 ]);
             }
         },
@@ -174,7 +214,7 @@
                 return m('header', [
                     m('h2', header),
                     form(scope),
-                    modules.record.views.button(scope)
+                    this.views.button(scope)
                 ]);
             }
         },
@@ -195,7 +235,7 @@
                 return m('header', [
                     m('h2', [m('i.mdi-navigation-expand-more'), 'Einnahmen']),
                     m('ul.collection', scope.collection.map(function (item) { return modules.expenses.views.item(scope, item); })),
-                    modules.expenses.views.button(scope)
+                    this.views.button(scope)
                 ]);
             }
         }
@@ -207,7 +247,8 @@
         '/': modules.revenue,
         '/expenses': modules.expenses,
         '/revenue': modules.revenue,
-        '/record': modules.record
+        '/record': modules.record,
+        '/categories': modules.categories
     });
 
 })(document, m, moment);
