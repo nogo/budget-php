@@ -1,0 +1,18 @@
+CACHE MANIFEST
+# v1.0.0  2015-03-01
+
+CACHE:
+css/materialize.min.css
+css/app.css
+js/vendor/EventEmitter.min.js
+js/vendor/q.js
+js/vendor/underscore-min.js
+js/vendor/amygdala.js
+js/vendor/moment.js
+js/vendor/mithril.js
+js/app.js
+
+NETWORK:
+*
+http://*
+https://*

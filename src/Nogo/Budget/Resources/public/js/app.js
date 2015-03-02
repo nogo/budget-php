@@ -1,254 +1,218 @@
 "use strict";
-(function (document, m, moment) {
-    var store = new Amygdala({
-        config: {
-            apiUrl: 'api',
-            idAttribute: 'id',
-            localStorage: true
+numeral.language('de');
+
+/*
+ * TODO Probleme beim Reload mit #/:id
+ * TODO Delete Item
+ * 
+ */
+
+(function (document, m, _, moment, numeral) {
+
+    var resources = {};
+    resources.categories = new Resource({
+        url: 'api/categories',
+        idAttribute: 'id',
+        empty: {
+            name: '',
+            with_description: false
+        }
+    });
+    resources.budget = new Resource({
+        url: 'api/budget',
+        idAttribute: 'id',
+        sort: function (a, b) {
+            var dateA = moment(a.date),
+                    dateB = moment(b.date);
+            var result = 0;
+            if (dateA > dateB) {
+                result = -1;
+            } else if (dateA < dateB) {
+                result = 1;
+            }
+
+            return result;
         },
-        schema: {
-            categories: {
-                url: '/categories'
-            },
-            budget: {
-                url: '/budget'
+        empty: {
+            type: 'spend',
+            date: moment().format('YYYY-MM-DD')
+        }
+    });
+
+    var formDescription = function (scope, category) {
+        var result = '';
+        if (category && category.with_description === '1') {
+            result = m('.row',
+                m('.col.s12', [
+                    m('label', {for : 'description'}, 'Beschreibung'),
+                    m('input#description.text-input', {
+                        type: 'text',
+                        name: 'description',
+                        placeholder: 'Bemerkung',
+                        onchange: scope.update,
+                        value: (scope.item.description) ? scope.item.description : ''
+                    })
+                ])
+            );
+        }
+        return result;
+    };
+
+    var viewBudgetListItem = function (title, item) {
+        title = title || 'Unbekannt';
+
+        var result = [m('span.title', title)];
+
+        if (item) {
+            if (item.date) {
+                result.push(m('p', moment(item.date).format('DD.MM.YYYY')));
+            }
+
+            if (item.amount) {
+                result.push(m('a.secondary-content.amount', {href: '#/' + item.id}, numeral(item.amount).format('0,0.00 $')));
             }
         }
-    });
 
-    m.startComputation();
-    store.get('categories');
-    store.get('budget').done(function () {
-        m.endComputation();
-    });
-
-    var menu = {
-        controller: function () {
-            var scope = {};
-
-            return scope;
-        },
-        view: function (scope) {
-            return m('.nav-wrapper', [
-                m('a.brand-logo', { href: '#/'}, [m('i.mdi-action-account-balance-wallet'), ' ', 'Budget']),
-                m('a.button-collapse', {  }, m('i.mdi-navigation-menu')),
-                m('ul.right.hide-on-med-and-down', [
-                    m('li', m('a', { href: '#/expenses' }, [m('i.mdi-navigation-expand-less.left'), 'Ausgaben'])),
-                    m('li', m('a', { href: '#/revenue' }, [m('i.mdi-navigation-expand-more.left'), 'Einnahmen'])),
-                    m('li', m('a', { href: '#/categories' }, [m('i.mdi-navigation-expand-more.left'), 'Kategorien'])),
-                    m('li', m('a', { href: '#/report' }, [m('i.mdi-av-equalizer.left'), 'Report']))
-                ]),
-                m('ul.side-nav', [
-                    m('li', m('a', { href: '#/expenses' }, [m('i.mdi-navigation-expand-less.left'), 'Ausgaben'])),
-                    m('li', m('a', { href: '#/revenue' }, [m('i.mdi-navigation-expand-more.left'), 'Einnahmen'])),
-                    m('li', m('a', { href: '#/categories' }, [m('i.mdi-navigation-expand-more.left'), 'Kategorien'])),
-                    m('li', m('a', { href: '#/report' }, [m('i.mdi-av-equalizer.left'), 'Report']))
-                ])
-            ]);
-        }
+        return m('li.collection-item.list-item', result);
     };
 
-    var budget = {
-        build: function (type) {
-            return {
-                amount: 0.0,
-                type: type || 'spend',
-                category_id: 0,
-                date: moment().format('YYYY-MM-DD')
-            };
-        }
-    };
+    var viewBudgetList = function (collection, categories) {
+        collection = collection || [];
 
-    var form = function(scope) {
-        return m('div.row', m('form.col.s12', {
-            onsubmit: scope.add
-        }, [
-            m('div.row', 
-                m('.input-field.col.s12', [
-                    m('i.mdi-editor-attach-money.prefix'),
-                    m('input#amount.text-input', {
-                        type: 'number',
-                        name: 'amount',
-                        placeholder: 'Was wurde Ausgegeben?',
-                        autofocus: '',
-                        required: '',
-                        onchange: scope.update,
-                        value: scope.item.amount
-                    })
-                ])
-            ),
-            m('div.row', m('.input-field.col.s12', [
-                m('select#category.browser-default', {
-                    name: 'category_id',
-                    onchange: scope.update
-                }, scope.categories.map(function (item) {
-                    var attr = { value: item.id };
-                    if (scope.item.category_id == item.id) {
-                        attr.selected = 'selected';
-                    }
-                    return m('option', attr, item.name);
-                }))
-            ])),
-            m('div.row', 
-                m('.input-field.col.s12', [
-                    m('i.mdi-editor-insert-invitation.prefix'),
-                    m('input#date', {
-                        type: 'date',
-                        name: 'date',
-                        onchange: scope.update,
-                        value: scope.item.date
-                    })
-                ])
-            )
-        ]));
+        var result = [];
+        if (collection.length > 0) {
+            result = collection.slice(0, 25).map(function (item) {
+                var title = 'Nicht definiert', cid = parseInt(item.category_id);
+                if (cid > 0) {
+                    title = categories.find(cid).name;
+                }
+                return viewBudgetListItem(title, item);
+            });
+        } else {
+            result.push(viewBudgetListItem('Keine Einträge gefunden.'));
+        }
+
+        return m('ul.collection', result);
     };
 
     var modules = {
-        categories: {
-            controller: function () {
-                var scope = {};
-
-                scope.collection = store.findAll('categories');
-                scope.action = function () {
-                    m.route('/categories/add', {type: scope.type});
-                };
-
-                return scope;
-            },
-            views: {
-                item: function (scope, item) {
-                    return m('li.collection-item', m('div', [
-                        item.name,
-                        m('a.secondary-content', { href: '#' }, m('i.mdi-content-remove'))
-                    ]));
-                },
-                form: function () {
-
-                },
-                button: function (scope) {
-                    return m('.fixed-action-btn', m('a.btn-floating.btn-large.red', { onclick: scope.action }, m('i.large.mdi-content-add')));
-                }
-            },
-            view: function (scope) {
-                return m('header', [
-                    m('h2', [m('i.mdi-navigation-expand-less'), 'Kategorien']),
-                    m('div.row', m('.input-field.col.s12', [
-                        m('input#amount.text-input', {
-                            placeholder: 'Neue Kategorie'
-                        })
-                    ])),
-                    m('ul.collection', scope.collection.map(function (item) { return modules.categories.views.item(scope, item); })),
-                    this.views.button(scope)
-                ]);
-            }
-        },
-        expenses: {
-            controller: function () {
-                var scope = {
-                    type: 'spend'
-                };
-
-                scope.collection = store.findAll('budget', { type: scope.type });
-                scope.categories = store.findAll('categories');
-                scope.action = function () {
-                    m.route('/record', {type: scope.type});
-                };
-
-                return scope;
-            },
-            views: {
-                item: function (scope, item) {
-                    var category = store.find('categories', item.category_id),
-                        title = 'unkown';
-                    if (category) {
-                        title = category.name;
-                    }
-                    return m('li.collection-item', [
-                        m('span.title', title),
-                        m('p', item.amount)
-                    ]);
-                },
-                button: function (scope) {
-                    return m('.fixed-action-btn', m('a.btn-floating.btn-large.red', { onclick: scope.action }, m('i.large.mdi-content-add')));
-                }
-            },
-            view: function (scope) {
-                return m('header', [
-                    m('h2', [m('i.mdi-navigation-expand-less'), 'Ausgaben']),
-                    m('ul.collection', scope.collection.map(function (item) { return modules.expenses.views.item(scope, item); })),
-                    this.views.button(scope)
-                ]);
-            }
-        },
         record: {
             controller: function () {
                 var scope = {};
 
-                scope.categories = store.findAll('categories');
-                scope.item = budget.build(m.route.param('type'));
+                scope.categories = resources.categories;
+                scope.budget = resources.budget;
+
+                if (m.route.param('id')) {
+                    scope.item = scope.budget.find(m.route.param('id'));
+                } else {
+                    scope.item = scope.budget.empty();
+                }
+
                 scope.add = function (e) {
                     e.preventDefault();
-                    if (scope.item.amount === 0) {
+                    if (!scope.item.amount) {
                         return;
                     }
-                    store.add('budget', scope.item);
-                    scope.item = budget.build();
+                    scope.budget.persist(scope.item).then(function (data) {
+                        scope.item = scope.budget.empty();
+                        return data;
+                    });
                 };
                 scope.update = function (e) {
                     scope.item[e.target.name] = e.target.value;
+                };
+                scope.remove = function (e) {
+                    e.preventDefault();
+                    if (!scope.item.id) {
+                        return;
+                    }
+                    scope.budget.remove(scope.item).then(function (data) {
+                        m.route('/');
+                        return data;
+                    });
                 };
 
                 return scope;
             },
             views: {
                 button: function (scope) {
-                    return m('.fixed-action-btn', m('a.btn-floating.btn-large.green', { onclick: scope.add }, m('i.large.mdi-action-done')));
+                    return m('.fixed-action-btn', m('a.btn-floating.btn-large.green', {onclick: scope.add}, m('i.large.mdi-action-done')));
+                },
+                form: function (scope) {
+                    var category = undefined,
+                        deleteBtn = '';
+                    if (scope.item && scope.item.category_id) {
+                        category = scope.categories.find(scope.item.category_id);
+                    }
+
+                    if (scope.item.id) {
+                        deleteBtn = m('button.btn-floating.btn-large.red', { onclick: scope.remove }, m('i.large.mdi-action-delete'));
+                    }
+
+                    return m('div.row.card-panel', m('form.col.s12', { onsubmit: scope.add }, [
+                        m('div.row',
+                                m('.col.s12', [
+                                    m('label', {for : 'amount'}, 'Ausgabe'),
+                                    m('input#amount', {
+                                        type: 'number',
+                                        name: 'amount',
+                                        placeholder: 'Wieviel wurde ausgegeben?',
+                                        autofocus: '',
+                                        required: '',
+                                        step: 0.01,
+                                        min: 0,
+                                        onchange: scope.update,
+                                        value: scope.item.amount
+                                    })
+                                ])
+                                ),
+                        m('div.row', m('.col.s12', [
+                            m('label', {for : 'category'}, 'Kategorie'),
+                            m('select#category.browser-default', {
+                                name: 'category_id',
+                                onchange: scope.update
+                            }, scope.categories.findAll().map(function (item) {
+                                var attr = {value: item.id};
+                                if (scope.item.category_id
+                                        && scope.item.category_id == item.id) {
+                                    attr.selected = 'selected';
+                                }
+                                return m('option', attr, item.name);
+                            }))
+                        ])),
+                        formDescription(scope, category),
+                        m('div.row',
+                                m('.col.s12', [
+                                    m('label', {for : 'date'}, 'Datum'),
+                                    m('input#date', {
+                                        type: 'date',
+                                        name: 'date',
+                                        onchange: scope.update,
+                                        value: scope.item.date
+                                    })
+                                ])
+                                ),
+                        m('div', [
+                            deleteBtn,
+                            m('.right', m('button.btn-floating.btn-large.green', {type: 'submit'}, m('i.large.mdi-action-done')))
+                        ])
+                    ]));
                 }
             },
             view: function (scope) {
-                var header = [m('i.mdi-navigation-expand-less'), 'Ausgaben'];
-                if (m.route.param('type') === 'income') {
-                    header = [m('i.mdi-navigation-expand-more'), 'Einnahmen'];
-                }
-
-                return m('header', [
-                    m('h2', header),
-                    form(scope),
-                    this.views.button(scope)
-                ]);
-            }
-        },
-        revenue: {
-            controller: function () {
-                var scope = {
-                    type: 'income'
-                };
-
-                scope.collection = store.findAll('budget', { type: scope.type });
-                scope.action = function () {
-                    m.route('/record', {type: scope.type});
-                };
-
-                return scope;
-            },
-            view: function (scope) {
-                return m('header', [
-                    m('h2', [m('i.mdi-navigation-expand-more'), 'Einnahmen']),
-                    m('ul.collection', scope.collection.map(function (item) { return modules.expenses.views.item(scope, item); })),
-                    this.views.button(scope)
-                ]);
+                return [
+                    this.views.form(scope),
+                    viewBudgetList(scope.budget.findAll(), scope.categories)
+                ];
             }
         }
     };
 
-    m.module(document.getElementById('menu'), menu);
     m.route.mode = "hash";
     m.route(document.getElementById('app'), '/', {
-        '/': modules.revenue,
-        '/expenses': modules.expenses,
-        '/revenue': modules.revenue,
-        '/record': modules.record,
-        '/categories': modules.categories
+        '/': modules.record,
+        '/:id': modules.record
     });
 
-})(document, m, moment);
+})(document, m, _, moment, numeral);
