@@ -25,10 +25,10 @@ select:focus {
 
 .collection .list-item .secondary-content {
     position: absolute;
-    top: 16px;
+    /*top: 16px;*/
     right: 16px;
 }
 
 .collection .list-item .amount {
-    font-size: 1.5rem;
+    /*font-size: 1.2rem;*/
 }

@@ -39,6 +39,8 @@ numeral.language('de');
         }
     });
 
+    var store = {};
+
     var formDescription = function (scope, category) {
         var result = '';
         if (category && category.with_description === '1') {
@@ -64,35 +66,39 @@ numeral.language('de');
         var result = [m('span.title', title)];
 
         if (item) {
-            if (item.date) {
-                result.push(m('p', moment(item.date).format('DD.MM.YYYY')));
-            }
-
             if (item.amount) {
-                result.push(m('a.secondary-content.amount', {href: '#/' + item.id}, numeral(item.amount).format('0,0.00 $')));
+                result.push(m('span.secondary-content.amount', numeral(item.amount).format('0,0.00 $')));
             }
         }
 
-        return m('li.collection-item.list-item', result);
+        return m('a.collection-item.list-item', {href: '#/' + item.id}, result);
     };
 
     var viewBudgetList = function (collection, categories) {
         collection = collection || [];
 
+        var header;
         var result = [];
         if (collection.length > 0) {
             result = collection.slice(0, 25).map(function (item) {
-                var title = 'Nicht definiert', cid = parseInt(item.category_id);
+                var title = 'Nicht definiert', 
+                    cid = parseInt(item.category_id),
+                    result = [];
                 if (cid > 0) {
                     title = categories.find(cid).name;
                 }
-                return viewBudgetListItem(title, item);
+                if (!header || header != item.date) {
+                    header = item.date;
+                    result.push(m('li.collection-header', moment(header).format('DD.MM.YYYY')))
+                }
+                result.push(viewBudgetListItem(title, item));
+                return result;
             });
         } else {
             result.push(viewBudgetListItem('Keine Einträge gefunden.'));
         }
 
-        return m('ul.collection', result);
+        return m('div.collection.with-header', result);
     };
 
     var modules = {
@@ -142,8 +148,12 @@ numeral.language('de');
                 form: function (scope) {
                     var category = undefined,
                         deleteBtn = '';
-                    if (scope.item && scope.item.category_id) {
-                        category = scope.categories.find(scope.item.category_id);
+                    if (scope.item) {
+                        if (scope.item.category_id) {
+                            category = scope.categories.find(scope.item.category_id);
+                        } else if (scope.categories.first()) {
+                            scope.item.category_id = scope.categories.first().id;
+                        }
                     }
 
                     if (scope.item.id) {
@@ -174,9 +184,10 @@ numeral.language('de');
                                 onchange: scope.update
                             }, scope.categories.findAll().map(function (item) {
                                 var attr = {value: item.id};
-                                if (scope.item.category_id
-                                        && scope.item.category_id == item.id) {
-                                    attr.selected = 'selected';
+                                if (category !== undefined) {
+                                    if (category === item) {
+                                        attr.selected = 'selected';
+                                    }
                                 }
                                 return m('option', attr, item.name);
                             }))

@@ -40,7 +40,15 @@ Resource.prototype.buildIdxMap = function (collection, attr) {
 
 Resource.prototype.empty = function (data) {
     data = data || {};
-    return _.extend(this.config.empty, data);
+    return _.extend({}, this.config.empty, data);
+};
+
+Resource.prototype.first = function () {
+    return (this.collection.length > 0) ? this.collection[0] : undefined;
+};
+
+Resource.prototype.last = function () {
+    return (this.collection.length > 0) ? this.collection[this.collection.length - 1] : undefined;
 };
 
 Resource.prototype.find = function (id) {
