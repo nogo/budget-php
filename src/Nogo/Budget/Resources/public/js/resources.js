@@ -1,8 +1,14 @@
 'use strict';
 
-// TODO Offline support
-// TODO localStorage einbauen
-
+/**
+ * Resources.js
+ *
+ * TODO Offline support
+ * TODO localStorage einbauen
+ *
+ * @param {object} options Resource configuration
+ * @returns {Resource}
+ */
 var Resource = function (options) {
     var that = this;
 
@@ -86,17 +92,19 @@ Resource.prototype.remove = function (data) {
     var url = this.config.url,
         method = 'DELETE',
         that = this,
-        deferred = m.deferred();
+        deferred = m.deferred(),
+        id = data[this.config.idAttribute];
 
-    if (data[this.config.idAttribute]) {
-        url = this.config.url + '/' + data[this.config.idAttribute];
+    if (id) {
+        url = this.config.url + '/' + id;
 
         m.request({ method: method, url: url })
         .then(function(response) {
-            var idx = that.map[id];
-            if (idx) {
-                delete that.map[idx];
+            var idx = that.map[id],
+                item = data;
+            if (idx !== undefined) {
                 item = that.collection.splice(idx, 1);
+                that.map = that.buildIdxMap(that.collection, that.config.idAttribute);
             }
             deferred.resolve(item);
             return item;
