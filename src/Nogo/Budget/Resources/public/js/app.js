@@ -57,17 +57,24 @@ numeral.language('de');
 
         var result = [m('span.title', title)],
             attr = {},
-            itemClass = '.red-text';
+            itemClass = '';
 
         if (item) {
-            if (item.type && item.type === 'income') {
-                itemClass = '.green-text';
+            if (item.id) {
+                attr.href = '#/' + item.id;
             }
+            
+            switch (item.type) {
+                case 'income':
+                    itemClass = '.green-text';
+                break;
+                default:
+                    itemClass = '.red-text';
+            }
+            
             if (item.amount) {
                 result.push(m('span.secondary-content.amount' + itemClass, numeral(item.amount).format('0,0.00 $')));
             }
-
-            attr.href = '#/' + item.id;
         }
 
         return m('a.collection-item.list-item' + itemClass, attr, result);
