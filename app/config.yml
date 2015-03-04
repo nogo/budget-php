@@ -1,5 +1,5 @@
 import:
-    - "%root_dir%/vendor/nogo/api/Resources/config/config.yml"
+    - "%root_dir%/vendor/nogo/api/src/Resources/config/config.yml"
     - "%root_dir%/src/Nogo/Budget/Resources/config/config.yml"
     - "%root_dir%/app/parameters.yml"
 
@@ -7,10 +7,9 @@ debug: true
 mode: "development"
 
 # Paths
-templates.path: "%root_dir%/templates"
-app_dir:  "%root_dir%/app"
-data_dir:  "%root_dir%/data"
-cache_dir: "%data_dir%/cache"
+app_dir:        "%root_dir%/app"
+data_dir:       "%root_dir%/data"
+cache_dir:      "%data_dir%/cache"
 
 # Logging
 log.enabled: true

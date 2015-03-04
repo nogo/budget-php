@@ -1,11 +1,16 @@
+# Application
+#debug: false
+#mode: "production"
+
 # Database
+# mysql (remove if not needed)
 #database.adapter: mysql
 #database.dsn:     "host=localhost;dbname=budget;charset=utf8"
 #database.username: ""
 #database.password: ""
 #database.charset: "utf8"
 
-# sqlite
+# sqlite  (remove if not needed)
 #database.adapter: sqlite
 #database.dsn:     "%data_dir%/database.sdb"
 #database.username: ""

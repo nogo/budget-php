@@ -1,10 +1,9 @@
 <?php
+define('ROOT_DIR', realpath(dirname(__FILE__) . '/../' ));
+require_once ROOT_DIR . '/vendor/autoload.php';
+
 use Nogo\Framework\Config\SlimLoader;
 use Slim\Slim;
-
-define('ROOT_DIR', realpath(dirname(__FILE__) . '/../' ));
-
-require_once ROOT_DIR . '/vendor/autoload.php';
 
 $app = new Slim();
 

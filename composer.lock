@@ -295,12 +295,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nogo/api.git",
-                "reference": "2776683a97a3cab4f617b518fcde2a4637a91636"
+                "reference": "42267c6743a529af79d2bfdde300d2bfb18d149c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nogo/api/zipball/2776683a97a3cab4f617b518fcde2a4637a91636",
-                "reference": "2776683a97a3cab4f617b518fcde2a4637a91636",
+                "url": "https://api.github.com/repos/nogo/api/zipball/42267c6743a529af79d2bfdde300d2bfb18d149c",
+                "reference": "42267c6743a529af79d2bfdde300d2bfb18d149c",
                 "shasum": ""
             },
             "require": {
@@ -312,6 +312,11 @@
                 "phpunit/phpunit": "*"
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Nogo\\Api\\": "src/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -324,7 +329,7 @@
                 }
             ],
             "description": "Api server",
-            "time": "2015-03-04 11:03:28"
+            "time": "2015-03-04 12:59:31"
         },
         {
             "name": "nogo/framework",
@@ -332,12 +337,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nogo/framework.git",
-                "reference": "c631c16763e400dd30631ffd79046b9a0c8fca9c"
+                "reference": "9251ecd1e8465bdc417fc533159a88afb6dd25d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nogo/framework/zipball/c631c16763e400dd30631ffd79046b9a0c8fca9c",
-                "reference": "c631c16763e400dd30631ffd79046b9a0c8fca9c",
+                "url": "https://api.github.com/repos/nogo/framework/zipball/9251ecd1e8465bdc417fc533159a88afb6dd25d6",
+                "reference": "9251ecd1e8465bdc417fc533159a88afb6dd25d6",
                 "shasum": ""
             },
             "require": {
@@ -353,6 +358,11 @@
                 "phpunit/phpunit": "4.6.*"
             },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Nogo\\Framework\\": "src/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -365,7 +375,7 @@
                 }
             ],
             "description": "mvc extension to slim framework",
-            "time": "2015-03-04 11:02:44"
+            "time": "2015-03-04 12:59:58"
         },
         {
             "name": "slim/slim",

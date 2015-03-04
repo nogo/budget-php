@@ -1,10 +1,6 @@
 "use strict";
 numeral.language('de');
 
-/*
- * 
- */
-
 (function (document, m, _, moment, numeral) {
 
     var resources = {};
@@ -37,8 +33,6 @@ numeral.language('de');
         }
     });
 
-    var store = {};
-
     var formDescription = function (scope, category) {
         var result = '';
         if (category && category.with_description === '1') {
@@ -61,15 +55,19 @@ numeral.language('de');
     var viewBudgetListItem = function (title, item) {
         title = title || 'Unbekannt';
 
-        var result = [m('span.title', title)];
+        var result = [m('span.title', title)],
+            itemClass = '.red-text';
 
         if (item) {
+            if (item.type && item.type === 'income') {
+                itemClass = '.green-text';
+            }
             if (item.amount) {
-                result.push(m('span.secondary-content.amount', numeral(item.amount).format('0,0.00 $')));
+                result.push(m('span.secondary-content.amount' + itemClass, numeral(item.amount).format('0,0.00 $')));
             }
         }
 
-        return m('a.collection-item.list-item', {href: '#/' + item.id}, result);
+        return m('a.collection-item.list-item' + itemClass, {href: '#/' + item.id}, result);
     };
 
     var viewBudgetList = function (collection, categories) {
