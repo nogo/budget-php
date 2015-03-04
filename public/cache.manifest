@@ -1,9 +1,20 @@
 CACHE MANIFEST
-# v1.0.0  2015-03-01
+# v1.1.0  2015-03-04
 
 CACHE:
 css/materialize.min.css
 css/app.css
+font/material-design-icons/Material-Design-Icons.eot
+font/material-design-icons/Material-Design-Icons.svg
+font/material-design-icons/Material-Design-Icons.ttf
+font/material-design-icons/Material-Design-Icons.woff
+font/roboto/Roboto-Bold.ttf
+font/roboto/Roboto-Light.ttf
+font/roboto/Roboto-Medium.ttf
+font/roboto/Roboto-Regular.ttf
+font/roboto/Roboto-Thin.ttf
+img/favicon.ico
+img/tile150.png
 js/vendor/EventEmitter.min.js
 js/vendor/q.js
 js/vendor/underscore-min.js
