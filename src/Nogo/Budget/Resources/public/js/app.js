@@ -56,6 +56,7 @@ numeral.language('de');
         title = title || 'Unbekannt';
 
         var result = [m('span.title', title)],
+            attr = {},
             itemClass = '.red-text';
 
         if (item) {
@@ -65,9 +66,11 @@ numeral.language('de');
             if (item.amount) {
                 result.push(m('span.secondary-content.amount' + itemClass, numeral(item.amount).format('0,0.00 $')));
             }
+
+            attr.href = '#/' + item.id;
         }
 
-        return m('a.collection-item.list-item' + itemClass, {href: '#/' + item.id}, result);
+        return m('a.collection-item.list-item' + itemClass, attr, result);
     };
 
     var viewBudgetList = function (collection, categories) {
