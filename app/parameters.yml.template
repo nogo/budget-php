@@ -1,7 +1,12 @@
 # Database
-database.adapter: mysql
-database.dsn:     "%app_dir%/database.sdb"
-database.username: ""
-database.password: ""
+#database.adapter: mysql
+#database.dsn:     "host=localhost;dbname=budget;charset=utf8"
+#database.username: ""
+#database.password: ""
+#database.charset: "utf8"
 
-# API
+# sqlite
+#database.adapter: sqlite
+#database.dsn:     "%data_dir%/database.sdb"
+#database.username: ""
+#database.password: ""

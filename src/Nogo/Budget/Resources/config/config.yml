@@ -1,5 +1,5 @@
 migration_dir: "%app_dir%/migrations"
 
 routes:
-    - "Nogo\\Budget\\Controller\\UpdateController"
+    - "Nogo\\Budget\\Controller\\MaintenanceController"
     - "Nogo\\Budget\\Controller\\AppController"

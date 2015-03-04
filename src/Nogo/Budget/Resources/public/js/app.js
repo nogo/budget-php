@@ -2,8 +2,6 @@
 numeral.language('de');
 
 /*
- * TODO Probleme beim Reload mit #/:id
- * TODO Delete Item
  * 
  */
 

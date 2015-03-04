@@ -1,11 +1,11 @@
 <?php
 namespace Nogo\Budget\Controller;
 
-use Nogo\Framework\Controller\Controller;
+use Nogo\Framework\Controller\SlimController;
 use Nogo\Framework\Database\Migrate;
 use Slim\Slim;
 
-class UpdateController implements Controller
+class MaintenanceController implements SlimController
 {
     protected $app;
 
@@ -13,6 +13,7 @@ class UpdateController implements Controller
     {
         $this->app = $app;
 
+        //$this->app->get('/install', [$this, 'installAction']); // TODO
         $this->app->get('/update', [$this, 'updateAction']);
     }
 

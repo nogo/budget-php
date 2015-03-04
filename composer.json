@@ -2,14 +2,10 @@
     "name": "nogo/budget",
     "description": "Budget management",
     "require": {
-        "slim/slim": "2.5.*",
-
-        "symfony/yaml": "2.6.*",
-        "aura/sql": "2.*",
-        "aura/sqlquery": "2.*",
-        "aura/filter": "dev-develop-2",
-        "aura/sqlschema": "dev-master",
-        "hampel/json": "~2.0"
+        "nogo/api": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.6.*"
     },
     "autoload": {
         "psr-0": {"": "src/"}

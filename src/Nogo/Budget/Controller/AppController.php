@@ -1,10 +1,10 @@
 <?php
 namespace Nogo\Budget\Controller;
 
-use Nogo\Framework\Controller\Controller;
+use Nogo\Framework\Controller\SlimController;
 use Slim\Slim;
 
-class AppController implements Controller
+class AppController implements SlimController
 {
     /**
      * @var Slim
