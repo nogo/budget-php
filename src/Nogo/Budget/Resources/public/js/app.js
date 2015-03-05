@@ -112,11 +112,17 @@ numeral.language('de');
             controller: function () {
                 var scope = {};
 
+                // add resources to scope
                 scope.categories = resources.categories;
                 scope.budget = resources.budget;
 
+                // get item if route has id
                 if (m.route.param('id')) {
                     scope.item = scope.budget.find(m.route.param('id'));
+
+                    if (!scope.item.amount) {
+                        m.route('/');
+                    }
                 } else {
                     scope.item = scope.budget.empty();
                 }
@@ -154,17 +160,23 @@ numeral.language('de');
                 form: function (scope) {
                     var category = undefined,
                         deleteBtn = '';
+
+                    if (!scope.item) {
+                        scope.item = scope.budget.empty();
+                    }
+
                     if (scope.item) {
                         if (scope.item.category_id) {
                             category = scope.categories.find(scope.item.category_id);
                         } else if (scope.categories.first()) {
                             scope.item.category_id = scope.categories.first().id;
                         }
+
+                        if (scope.item.id) {
+                            deleteBtn = m('button.btn-floating.btn-large.red', { onclick: scope.remove }, m('i.large.mdi-action-delete'));
+                        }
                     }
 
-                    if (scope.item.id) {
-                        deleteBtn = m('button.btn-floating.btn-large.red', { onclick: scope.remove }, m('i.large.mdi-action-delete'));
-                    }
 
                     return m('div.row.card-panel', m('form.col.s12', { onsubmit: scope.add }, [
                         m('div.row',

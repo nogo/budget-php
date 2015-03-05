@@ -52,20 +52,12 @@ Resource.prototype.last = function () {
 };
 
 Resource.prototype.find = function (id) {
-    var result = this.collection[this.map[id]],
-        that = this;
+    var cached = this.collection[this.map[id]];
 
-    if (!result) {
-        m.request({ method: 'GET', url: this.config.url + '/' + id}).then(function(data) {
-            if (data) {
-                result = data;
-            } else {
-                result = that.empty();
-            }
-            return result;
-        });
+    if (!cached) {
+        cached = this.empty();
     }
-    return result;
+    return cached;
 };
 
 Resource.prototype.findAll = function () {
