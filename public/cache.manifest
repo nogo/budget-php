@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# v1.1.0  2015-03-04
+# 2015-03-05.01
 
 CACHE:
 css/materialize.min.css
@@ -15,12 +15,13 @@ font/roboto/Roboto-Regular.ttf
 font/roboto/Roboto-Thin.ttf
 img/favicon.ico
 img/tile150.png
-js/vendor/EventEmitter.min.js
-js/vendor/q.js
-js/vendor/underscore-min.js
-js/vendor/amygdala.js
+js/vendor/lodash.min.js
 js/vendor/moment.js
+js/vendor/numeral.min.js
+js/vendor/languages.min.js
+js/vendor/languages/de.min.js
 js/vendor/mithril.js
+js/resources.js
 js/app.js
 
 NETWORK:
