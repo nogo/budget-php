@@ -77,9 +77,11 @@ Resource.prototype.persist = function (data) {
 
     m.request({ method: method, url: url, data: data })
     .then(function(response) {
-        that.collection.push(response);
-        if (_.isFunction(that.config.sort)) {
-            that.collection = that.collection.sort(that.config.sort);
+        if (method === 'POST') {
+            that.collection.push(response);
+            if (_.isFunction(that.config.sort)) {
+                that.collection = that.collection.sort(that.config.sort);
+            }
         }
         deferred.resolve(response);
         return response;

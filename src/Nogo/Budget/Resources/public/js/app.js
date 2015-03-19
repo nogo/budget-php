@@ -1,6 +1,11 @@
 "use strict";
 numeral.language('de');
-
+/*
+ * TODO
+ * - Background sync on revisiting tab
+ * -
+ *
+ */
 (function (document, m, _, moment, numeral) {
 
     var resources = {};
@@ -72,6 +77,11 @@ numeral.language('de');
                     itemClass = '.red-text';
             }
             
+            if (item.description) {
+                result.push(m('span.description', item.description));
+            }
+            
+            
             if (item.amount) {
                 result.push(m('span.secondary-content.amount' + itemClass, numeral(item.amount).format('0,0.00 $')));
             }
@@ -95,7 +105,7 @@ numeral.language('de');
                 }
                 if (!header || header != item.date) {
                     header = item.date;
-                    result.push(m('li.collection-header', moment(header).format('DD.MM.YYYY')))
+                    result.push(m('div.collection-header', moment(header).format('DD.MM.YYYY')))
                 }
                 result.push(viewBudgetListItem(title, item));
                 return result;
@@ -134,6 +144,7 @@ numeral.language('de');
                     }
                     scope.budget.persist(scope.item).then(function (data) {
                         scope.item = scope.budget.empty();
+                        m.route('/');
                         return data;
                     });
                 };
@@ -230,10 +241,11 @@ numeral.language('de');
                 }
             },
             view: function (scope) {
-                return [
-                    this.views.form(scope),
-                    viewBudgetList(scope.budget.findAll(), scope.categories)
-                ];
+                return m('div.row', [
+                    m('div.col.s12.m5.l4', this.views.form(scope)),
+                    m('div.col.s12.m7.l8', viewBudgetList(scope.budget.findAll(), scope.categories))
+                ]);
+                
             }
         }
     };

@@ -16,7 +16,17 @@ select:focus {
 }
 
 .collection .list-item .title {
-    font-size: 16px;
+    font-size: 1rem;
+}
+
+.collection .list-item .description {
+    color: #9E9E9E;
+    font-size: .8rem;
+}
+
+.collection .list-item .description:before {
+    content: '-';
+    padding: 0 .8em;
 }
 
 .collection .list-item p {
@@ -26,4 +36,8 @@ select:focus {
 .collection .list-item .secondary-content {
     position: absolute;
     right: 16px;
+}
+
+.fixed {
+    position: fixed;
 }

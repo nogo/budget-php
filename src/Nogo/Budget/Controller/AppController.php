@@ -21,7 +21,7 @@ class AppController implements SlimController
     public function indexAction()
     {
         $view = $this->app->view();
-        $view->setTemplatesDirectory(dirname(__FILE__) . '/../Resources/views');
+        $view->setTemplatesDirectory(dirname(__FILE__) . '/../Resources/public');
         $view->display('index.html');
     }
 }
