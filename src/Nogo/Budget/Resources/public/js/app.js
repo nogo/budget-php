@@ -96,7 +96,7 @@ numeral.language('de');
         var header;
         var result = [];
         if (collection.length > 0) {
-            result = collection.slice(0, 25).map(function (item) {
+            result = collection.filter(function (item) { return moment(item.date).format('YYYY-MM') == moment().format('YYYY-MM') }).map(function (item) {
                 var title = 'Nicht definiert', 
                     cid = parseInt(item.category_id),
                     result = [];
