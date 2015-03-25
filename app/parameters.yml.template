@@ -1,6 +1,7 @@
 # Application
 #debug: false
 #mode: "production"
+#log.level: 4
 
 # Database
 # mysql (remove if not needed)
@@ -15,3 +16,8 @@
 #database.dsn:     "%data_dir%/database.sdb"
 #database.username: ""
 #database.password: ""
+
+#auth:
+#    realm: Budget
+#    credentials:
+#        username: a1hash

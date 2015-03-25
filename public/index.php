@@ -1,4 +1,5 @@
 <?php
+
 define('ROOT_DIR', realpath(dirname(__FILE__) . '/../' ));
 require_once ROOT_DIR . '/vendor/autoload.php';
 
@@ -13,6 +14,10 @@ $app->container->singleton('configuration', function() use ($app) {
 });
 $app->configuration->import(ROOT_DIR . '/app/config.yml')->refresh();
 
+$app->config(
+    'log.writer', new Nogo\Framework\Log\Writer(array('path' => $app->config('log_dir')))
+);
+
 // load controller
 foreach($app->config('routes') as $class) {
     $ref = new ReflectionClass($class);
@@ -22,7 +27,7 @@ foreach($app->config('routes') as $class) {
          */
         $controller = new $class();
         $controller->enable($app);
-        $app->log->info('Register and enable controller [' . $class . '].');
+        $app->log->debug('Register and enable controller [' . $class . '].');
     }
 }
 

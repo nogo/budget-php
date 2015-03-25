@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/auraphp/Aura.Filter.git",
-                "reference": "e02b8b54b3d2f2c185058b7b0414bf159ba6d229"
+                "reference": "484f52353182e558ed72451fd3d3ea8f0278e4cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auraphp/Aura.Filter/zipball/e02b8b54b3d2f2c185058b7b0414bf159ba6d229",
-                "reference": "e02b8b54b3d2f2c185058b7b0414bf159ba6d229",
+                "url": "https://api.github.com/repos/auraphp/Aura.Filter/zipball/484f52353182e558ed72451fd3d3ea8f0278e4cc",
+                "reference": "484f52353182e558ed72451fd3d3ea8f0278e4cc",
                 "shasum": ""
             },
             "require": {
@@ -60,20 +60,20 @@
                 "validation",
                 "validator"
             ],
-            "time": "2015-01-14 23:14:33"
+            "time": "2015-03-04 15:32:55"
         },
         {
             "name": "aura/sql",
-            "version": "2.4.1",
+            "version": "2.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/auraphp/Aura.Sql.git",
-                "reference": "28a05225cdbdd4ae03ec352a85b0bfa854dd55e7"
+                "reference": "0bdfe1b873f3e511a4788bd1fa54fa486d8a3a8e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auraphp/Aura.Sql/zipball/28a05225cdbdd4ae03ec352a85b0bfa854dd55e7",
-                "reference": "28a05225cdbdd4ae03ec352a85b0bfa854dd55e7",
+                "url": "https://api.github.com/repos/auraphp/Aura.Sql/zipball/0bdfe1b873f3e511a4788bd1fa54fa486d8a3a8e",
+                "reference": "0bdfe1b873f3e511a4788bd1fa54fa486d8a3a8e",
                 "shasum": ""
             },
             "require": {
@@ -113,20 +113,20 @@
                 "sqlserver",
                 "sqlsrv"
             ],
-            "time": "2015-03-03 20:32:41"
+            "time": "2015-03-16 14:51:58"
         },
         {
             "name": "aura/sqlquery",
-            "version": "2.2.0",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/auraphp/Aura.SqlQuery.git",
-                "reference": "666d2995e255fef7ae05038b370bf140c2b80876"
+                "reference": "47524f97f4bfaa81e2c00be9f0add4cd343dbe27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auraphp/Aura.SqlQuery/zipball/666d2995e255fef7ae05038b370bf140c2b80876",
-                "reference": "666d2995e255fef7ae05038b370bf140c2b80876",
+                "url": "https://api.github.com/repos/auraphp/Aura.SqlQuery/zipball/47524f97f4bfaa81e2c00be9f0add4cd343dbe27",
+                "reference": "47524f97f4bfaa81e2c00be9f0add4cd343dbe27",
                 "shasum": ""
             },
             "require": {
@@ -180,7 +180,7 @@
                 "sqlserver",
                 "update"
             ],
-            "time": "2015-02-12 20:25:15"
+            "time": "2015-03-22 17:47:05"
         },
         {
             "name": "aura/sqlschema",
@@ -379,16 +379,16 @@
         },
         {
             "name": "slim/slim",
-            "version": "2.6.1",
+            "version": "2.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/slimphp/Slim.git",
-                "reference": "365dbfa0c02a31e76888eaec693dacd9dca1c82a"
+                "reference": "20a02782f76830b67ae56a5c08eb1f563c351a37"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slimphp/Slim/zipball/365dbfa0c02a31e76888eaec693dacd9dca1c82a",
-                "reference": "365dbfa0c02a31e76888eaec693dacd9dca1c82a",
+                "url": "https://api.github.com/repos/slimphp/Slim/zipball/20a02782f76830b67ae56a5c08eb1f563c351a37",
+                "reference": "20a02782f76830b67ae56a5c08eb1f563c351a37",
                 "shasum": ""
             },
             "require": {
@@ -421,7 +421,7 @@
                 "rest",
                 "router"
             ],
-            "time": "2015-03-02 19:09:48"
+            "time": "2015-03-08 18:41:17"
         },
         {
             "name": "symfony/yaml",
@@ -430,12 +430,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "d286fcdf3bab89d2eebdebf2efefc530bf69b613"
+                "reference": "1f2ce08b9e1ebdca0ffad35d5975c19b0f58daad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/d286fcdf3bab89d2eebdebf2efefc530bf69b613",
-                "reference": "d286fcdf3bab89d2eebdebf2efefc530bf69b613",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/1f2ce08b9e1ebdca0ffad35d5975c19b0f58daad",
+                "reference": "1f2ce08b9e1ebdca0ffad35d5975c19b0f58daad",
                 "shasum": ""
             },
             "require": {
@@ -471,7 +471,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2015-02-24 11:52:21"
+            "time": "2015-03-22 16:55:57"
         }
     ],
     "packages-dev": [
@@ -585,12 +585,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "9ed07757cd5c46fe33d28826327d274bd142a143"
+                "reference": "07606749da971eda75434814a313ed0ce6790f6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/9ed07757cd5c46fe33d28826327d274bd142a143",
-                "reference": "9ed07757cd5c46fe33d28826327d274bd142a143",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/07606749da971eda75434814a313ed0ce6790f6a",
+                "reference": "07606749da971eda75434814a313ed0ce6790f6a",
                 "shasum": ""
             },
             "require": {
@@ -637,7 +637,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2015-02-16 14:11:36"
+            "time": "2015-03-20 17:41:29"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -645,12 +645,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "3d0b2a3341a8bd4070504ef0609291d89fcfb59c"
+                "reference": "4676604b851bfc6fc02bf3394bf350c727bcebf4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/3d0b2a3341a8bd4070504ef0609291d89fcfb59c",
-                "reference": "3d0b2a3341a8bd4070504ef0609291d89fcfb59c",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/4676604b851bfc6fc02bf3394bf350c727bcebf4",
+                "reference": "4676604b851bfc6fc02bf3394bf350c727bcebf4",
                 "shasum": ""
             },
             "require": {
@@ -699,7 +699,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-02-26 08:10:32"
+            "time": "2015-03-19 05:49:08"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -889,12 +889,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "bac694882bd75a8de1ee05349bb069082c6c7754"
+                "reference": "fecf1e408f3141fd1ce008d1e738259f8f7154ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/bac694882bd75a8de1ee05349bb069082c6c7754",
-                "reference": "bac694882bd75a8de1ee05349bb069082c6c7754",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/fecf1e408f3141fd1ce008d1e738259f8f7154ab",
+                "reference": "fecf1e408f3141fd1ce008d1e738259f8f7154ab",
                 "shasum": ""
             },
             "require": {
@@ -933,6 +933,9 @@
             "autoload": {
                 "classmap": [
                     "src/"
+                ],
+                "files": [
+                    "src/Framework/Assert/Functions.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -953,7 +956,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-03-02 06:10:28"
+            "time": "2015-03-18 05:41:55"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -961,12 +964,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "37e984c0d004800c456658cb08580fdfd26d9c1d"
+                "reference": "55484334fb4c306ed24bfc3bdb0874685c29036f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/37e984c0d004800c456658cb08580fdfd26d9c1d",
-                "reference": "37e984c0d004800c456658cb08580fdfd26d9c1d",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/55484334fb4c306ed24bfc3bdb0874685c29036f",
+                "reference": "55484334fb4c306ed24bfc3bdb0874685c29036f",
                 "shasum": ""
             },
             "require": {
@@ -1008,7 +1011,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2015-03-02 06:02:35"
+            "time": "2015-03-18 09:04:51"
         },
         {
             "name": "sebastian/comparator",
