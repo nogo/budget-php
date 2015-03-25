@@ -295,12 +295,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nogo/api.git",
-                "reference": "42267c6743a529af79d2bfdde300d2bfb18d149c"
+                "reference": "0940eb8653a803cc568e854eefb0f21c8a41205c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nogo/api/zipball/42267c6743a529af79d2bfdde300d2bfb18d149c",
-                "reference": "42267c6743a529af79d2bfdde300d2bfb18d149c",
+                "url": "https://api.github.com/repos/nogo/api/zipball/0940eb8653a803cc568e854eefb0f21c8a41205c",
+                "reference": "0940eb8653a803cc568e854eefb0f21c8a41205c",
                 "shasum": ""
             },
             "require": {
@@ -329,7 +329,7 @@
                 }
             ],
             "description": "Api server",
-            "time": "2015-03-04 12:59:31"
+            "time": "2015-03-25 22:19:23"
         },
         {
             "name": "nogo/framework",
@@ -337,12 +337,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nogo/framework.git",
-                "reference": "9251ecd1e8465bdc417fc533159a88afb6dd25d6"
+                "reference": "3d7478cf956e72bbec2fdee52dbf8b941420a86e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nogo/framework/zipball/9251ecd1e8465bdc417fc533159a88afb6dd25d6",
-                "reference": "9251ecd1e8465bdc417fc533159a88afb6dd25d6",
+                "url": "https://api.github.com/repos/nogo/framework/zipball/3d7478cf956e72bbec2fdee52dbf8b941420a86e",
+                "reference": "3d7478cf956e72bbec2fdee52dbf8b941420a86e",
                 "shasum": ""
             },
             "require": {
@@ -375,7 +375,7 @@
                 }
             ],
             "description": "mvc extension to slim framework",
-            "time": "2015-03-04 12:59:58"
+            "time": "2015-03-25 22:18:39"
         },
         {
             "name": "slim/slim",
