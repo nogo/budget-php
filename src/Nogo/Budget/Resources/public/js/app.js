@@ -229,7 +229,7 @@ numeral.language('de');
                                         type: 'date',
                                         name: 'date',
                                         onchange: scope.update,
-                                        value: scope.item.date
+                                        value: moment(scope.item.date).format('YYYY-MM-DD')
                                     })
                                 ])
                                 ),
