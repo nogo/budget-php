@@ -8,7 +8,7 @@ numeral.language('de');
  */
 (function (document, m, _, moment, numeral) {
 
-    var resources = {};
+    var resources = {};    
     resources.categories = new Resource({
         url: 'api/categories',
         idAttribute: 'id',

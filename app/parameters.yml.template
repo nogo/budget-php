@@ -1,23 +1,15 @@
 # Application
-#debug: false
-#mode: "production"
-#log.level: 4
+debug: false
+mode: "production"
+log.level: 4
 
 # Database
-# mysql (remove if not needed)
-#database.adapter: mysql
-#database.dsn:     "host=localhost;dbname=budget;charset=utf8"
-#database.username: ""
-#database.password: ""
-#database.charset: "utf8"
-
-# sqlite  (remove if not needed)
-#database.adapter: sqlite
-#database.dsn:     "%data_dir%/database.sdb"
-#database.username: ""
-#database.password: ""
-
-#auth:
-#    realm: Budget
-#    credentials:
-#        username: a1hash
+database:
+  driver:    "mysql"
+  host:      "127.0.0.1"
+  database:  "budget"
+  username:  "root"
+  password:
+  charset:   "utf8"
+  collation: "utf8_general_ci"
+  prefix:
