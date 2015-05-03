@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# 2015-03-25 v01
+# 2015-05-03 v01
 
 CACHE:
 css/materialize.min.css
@@ -23,6 +23,7 @@ js/vendor/languages/de.min.js
 js/vendor/mithril.js
 js/resources.js
 js/app.js
+index.html
 
 NETWORK:
 *
