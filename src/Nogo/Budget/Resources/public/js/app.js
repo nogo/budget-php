@@ -10,7 +10,7 @@ numeral.language('de');
 
   var resources = {};
   resources.categories = new Resource({
-    url: 'api.php/api/categories',
+    url: 'api/categories',
     idAttribute: 'id',
     empty: {
       name: '',
@@ -18,7 +18,7 @@ numeral.language('de');
     }
   });
   resources.budget = new Resource({
-    url: 'api.php/api/budget',
+    url: 'api/budget',
     idAttribute: 'id',
     sort: function (a, b) {
       var dateA = moment(a.date),
@@ -137,7 +137,7 @@ numeral.language('de');
         var param = m.route.param('param');
         if (param) {
           var match = param.match(/(\d{4}\-\d{2})?\/?(\d+)?/);
-
+          
           if (match[1] !== undefined) {
             scope.currentDate = match[1];
           }
