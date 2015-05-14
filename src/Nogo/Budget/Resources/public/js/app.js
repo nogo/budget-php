@@ -73,8 +73,11 @@ numeral.language('de');
         case 'income':
           itemClass = '.green-text';
           break;
-        default:
+        case 'spend':
           itemClass = '.red-text';
+          break;
+        default:
+          itemClass = '.black-text';
       }
 
       if (item.description) {
@@ -99,6 +102,7 @@ numeral.language('de');
       return moment(item.date).format('YYYY-MM') === currentDate;
     });
     var result = [];
+    var sum = { };
 
     if (filtered.length > 0) {
       result = filtered.map(function (item) {
@@ -112,14 +116,33 @@ numeral.language('de');
           header = item.date;
           result.push(m('div.collection-header', moment(header).format('DD.MM.YYYY')));
         }
+        
+        if (!sum[item.type]) {
+          sum[item.type] = 0;
+        }
+        sum[item.type] += parseFloat(item.amount);
+
         result.push(viewBudgetListItem(currentDate, title, item));
         return result;
       });
+
+
+
+      result.push(m('div.collection-header', 'Summen'));
+      if (sum.income) {
+        result.push(viewBudgetListItem(undefined, 'Einnahmen', {
+          amount: sum.income
+        }));
+      }
+      if (sum.spend) {
+        result.push(viewBudgetListItem(undefined, 'Ausgaben', {
+          amount: sum.spend
+        }));
+      }
     } else {
-      result.push(viewBudgetListItem('Keine Einträge gefunden.'));
+      result.push(viewBudgetListItem(undefined, 'Keine Einträge gefunden.'));
     }
     result.unshift(m('div.collection-header.center-align', currentDate));
-
     return m('div.collection.with-header', result);
   };
 
@@ -213,7 +236,6 @@ numeral.language('de');
             }
           }
 
-
           return m('div.row.card-panel', m('form.col.s12', {onsubmit: scope.add}, [
             m('div.row',
               m('.col.s12', [
@@ -288,9 +310,20 @@ numeral.language('de');
         }
       },
       view: function (scope) {
+        var date = moment(scope.currentDate, 'YYYY-MM').startOf('month'),
+            last = date.clone().subtract(1, 'month').format('YYYY-MM'),
+            next = date.clone().add(1, 'month').format('YYYY-MM');
+        var navigation = m('.row', [
+          m('.col.s6', m('a.btn.grey', { href: '#/' + last }, [ m('i.mdi-navigation-arrow-back'), ' ',  last ])),
+          m('.col.s6.right-align', m('a.btn.grey', { href: '#/' + next }, [ next, ' ', m('i.mdi-navigation-arrow-forward')]))
+        ]);
+
         return m('div.row', [
           m('div.col.s12.m5.l4', this.views.form(scope)),
-          m('div.col.s12.m7.l8', viewBudgetList(scope.budget.findAll(), scope.categories, scope.currentDate))
+          m('div.col.s12.m7.l8', [
+            viewBudgetList(scope.budget.findAll(), scope.categories, scope.currentDate),
+            navigation
+          ])
         ]);
 
       }
