@@ -216,21 +216,21 @@ numeral.language('de');
 
           return m('div.row.card-panel', m('form.col.s12', {onsubmit: scope.add}, [
             m('div.row',
-                    m('.col.s12', [
-                      m('label', {for : 'amount'}, 'Ausgabe'),
-                      m('input#amount', {
-                        type: 'number',
-                        name: 'amount',
-                        placeholder: 'Wieviel wurde ausgegeben?',
-                        autofocus: '',
-                        required: '',
-                        step: 0.01,
-                        min: 0,
-                        onchange: scope.update,
-                        value: scope.item.amount
-                      })
-                    ])
-                    ),
+              m('.col.s12', [
+                m('label', {for : 'amount'}, 'Betrag'),
+                m('input#amount', {
+                  type: 'number',
+                  name: 'amount',
+                  placeholder: 'Wie ist der Betrag?',
+                  autofocus: '',
+                  required: '',
+                  step: 0.01,
+                  min: 0,
+                  onchange: scope.update,
+                  value: scope.item.amount
+                })
+              ])
+            ),
             m('div.row', m('.col.s12', [
               m('label', {for : 'category'}, 'Kategorie'),
               m('select#category.browser-default', {
@@ -248,16 +248,38 @@ numeral.language('de');
             ])),
             formDescription(scope, category),
             m('div.row',
-                    m('.col.s12', [
-                      m('label', {for : 'date'}, 'Datum'),
-                      m('input#date', {
-                        type: 'date',
-                        name: 'date',
-                        onchange: scope.update,
-                        value: moment(scope.item.date).format('YYYY-MM-DD')
-                      })
-                    ])
-                    ),
+              m('.col.s12', [
+                m('label', {for : 'date'}, 'Datum'),
+                m('input#date', {
+                  type: 'date',
+                  name: 'date',
+                  onchange: scope.update,
+                  value: moment(scope.item.date).format('YYYY-MM-DD')
+                })
+              ])
+            ),
+            m('.row', [
+              m('.col.s6', [
+                m('input#type-spend', { 
+                  type: 'radio',
+                  name: 'type',
+                  value: 'spend',
+                  onchange: scope.update,
+                  checked: (scope.item.type === 'spend')
+                }),
+                m('label', { for: 'type-spend'}, 'Ausgabe')
+              ]),
+              m('.col.s6', [
+                m('input#type-income', { 
+                  type: 'radio',
+                  name: 'type',
+                  value: 'income',
+                  onchange: scope.update,
+                  checked: (scope.item.type === 'income')
+                }),
+                m('label', { for: 'type-income'}, 'Einnahme')
+              ])
+            ]),
             m('div', [
               deleteBtn,
               m('.right', m('button.btn-floating.btn-large.green', {type: 'submit'}, m('i.large.mdi-action-done')))
