@@ -161,7 +161,11 @@ numeral.language('de');
           }
           scope.budget.persist(scope.item).then(function (data) {
             scope.item = scope.budget.empty();
-            m.route('/');
+            if (match[1] !== undefined) {
+              m.route('/' + match[1]);
+            } else {
+              m.route('/');
+            }
             return data;
           });
         };
