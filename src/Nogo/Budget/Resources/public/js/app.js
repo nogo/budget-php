@@ -126,17 +126,19 @@ numeral.language('de');
         return result;
       });
 
-
-
-      result.push(m('div.collection-header', 'Summen'));
-      if (sum.income) {
-        result.push(viewBudgetListItem(undefined, 'Einnahmen', {
-          amount: sum.income
+      if (sum.income && sum.spend) {
+        result.unshift(viewBudgetListItem(undefined, 'Summe', {
+          amount: sum.income - sum.spend
         }));
       }
       if (sum.spend) {
-        result.push(viewBudgetListItem(undefined, 'Ausgaben', {
+        result.unshift(viewBudgetListItem(undefined, 'Ausgaben', {
           amount: sum.spend
+        }));
+      }
+      if (sum.income) {
+        result.unshift(viewBudgetListItem(undefined, 'Einnahmen', {
+          amount: sum.income
         }));
       }
     } else {
