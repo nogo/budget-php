@@ -37,6 +37,8 @@ CREATE TABLE IF NOT EXISTS `budget` (
       ON UPDATE NO ACTION ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE OR REPLACE VIEW output as SELECT DATE_FORMAT(date, '%M') as "Datum", name as "Kategorie", COALESCE(description, name) as "Beschreibung", amount as "Betrag", date FROM budget b LEFT JOIN categories c ON (b.category_id=c.id) WHERE type = 'spend' ORDER BY date ASC;
+
 INSERT INTO `version` VALUES ('20150221130000');
 
 SET FOREIGN_KEY_CHECKS=1;
