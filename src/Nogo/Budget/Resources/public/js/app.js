@@ -9,20 +9,29 @@ numeral.language('de');
 (function (document, m, _, moment, numeral) {
 
   var resources = {};
-  resources.categories = new Resource({
+  resources.categories = new Collection({
     url: 'api/categories',
     idAttribute: 'id',
-    empty: {
-      name: '',
-      with_description: false
+    model: function (data) {
+      _.extend(this, {
+        name: '',
+        with_description: false
+      }, data || {});
     }
   });
-  resources.budget = new Resource({
+  resources.categories.fetch();
+  resources.budget = new Collection({
     url: 'api/budget',
     idAttribute: 'id',
+    model: function (data) {
+      _.extend(this, {
+        type: 'spend',
+        date: moment().format('YYYY-MM-DD')
+      }, data || {});
+    },
     sort: function (a, b) {
       var dateA = moment(a.date),
-              dateB = moment(b.date);
+          dateB = moment(b.date);
       var result = 0;
       if (dateA > dateB) {
         result = -1;
@@ -31,28 +40,25 @@ numeral.language('de');
       }
 
       return result;
-    },
-    empty: {
-      type: 'spend',
-      date: moment().format('YYYY-MM-DD')
     }
   });
+  resources.budget.fetch();
 
   var formDescription = function (scope, category) {
     var result = '';
     if (category && category.with_description === '1') {
       result = m('.row',
-              m('.col.s12', [
-                m('label', {for : 'description'}, 'Beschreibung'),
-                m('input#description.text-input', {
-                  type: 'text',
-                  name: 'description',
-                  placeholder: 'Bemerkung',
-                  onchange: scope.update,
-                  value: (scope.item.description) ? scope.item.description : ''
-                })
-              ])
-              );
+        m('.col.s12', [
+          m('label', {for : 'description'}, 'Beschreibung'),
+          m('input#description.text-input', {
+            type: 'text',
+            name: 'description',
+            placeholder: 'Bemerkung',
+            onchange: scope.update,
+            value: (scope.item.description) ? scope.item.description : ''
+          })
+        ])
+      );
     }
     return result;
   };
@@ -107,10 +113,13 @@ numeral.language('de');
     if (filtered.length > 0) {
       result = filtered.map(function (item) {
         var title = 'Nicht definiert',
-                cid = parseInt(item.category_id),
+                cid = item.category_id,
                 result = [];
-        if (cid > 0) {
-          title = categories.find(cid).name;
+        if (cid) {
+          var c = categories.find(cid);
+          if (c) {
+            title = c.name;
+          }
         }
         if (!header || header != item.date) {
           header = item.date;
@@ -157,7 +166,7 @@ numeral.language('de');
         scope.categories = resources.categories;
         scope.budget = resources.budget;
         scope.currentDate = moment().format('YYYY-MM');
-        scope.item = scope.budget.empty();
+        scope.item = scope.budget.create();
 
         var param = m.route.param('param');
         if (param) {
@@ -169,7 +178,7 @@ numeral.language('de');
 
           if (match[2] !== undefined) {
             scope.item = scope.budget.find(match[2]);
-            if (!scope.item.amount) {
+            if (scope.item && !scope.item.amount) {
               if (match[1] !== undefined) {
                 m.route('/' + match[1]);
               } else {
@@ -185,8 +194,8 @@ numeral.language('de');
             return;
           }
           scope.budget.persist(scope.item).then(function (data) {
-            scope.item = scope.budget.empty();
-            if (match[1] !== undefined) {
+            scope.item = scope.budget.create();
+            if (match && match[1] !== undefined) {
               m.route('/' + match[1]);
             } else {
               m.route('/');
@@ -203,7 +212,7 @@ numeral.language('de');
             return;
           }
           scope.budget.remove(scope.item).then(function (data) {
-            if (match[1] !== undefined) {
+            if (match && match[1] !== undefined) {
               m.route('/' + match[1]);
             } else {
               m.route('/');
@@ -223,7 +232,7 @@ numeral.language('de');
                   deleteBtn = '';
 
           if (!scope.item) {
-            scope.item = scope.budget.empty();
+            scope.item = scope.budget.create();
           }
 
           if (scope.item) {
@@ -260,7 +269,7 @@ numeral.language('de');
               m('select#category.browser-default', {
                 name: 'category_id',
                 onchange: scope.update
-              }, scope.categories.findAll().map(function (item) {
+              }, scope.categories.map(function (item) {
                 var attr = {value: item.id};
                 if (category !== undefined) {
                   if (category === item) {
@@ -323,7 +332,7 @@ numeral.language('de');
         return m('div.row', [
           m('div.col.s12.m5.l4', this.views.form(scope)),
           m('div.col.s12.m7.l8', [
-            viewBudgetList(scope.budget.findAll(), scope.categories, scope.currentDate),
+            viewBudgetList(scope.budget, scope.categories, scope.currentDate),
             navigation
           ])
         ]);
