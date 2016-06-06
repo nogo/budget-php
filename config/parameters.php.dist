@@ -1,11 +1,13 @@
 <?php
 
 return [
+    'displayErrorDetails' => false,
+    'enableSecurity' => true,
     'auth' => [
-        'realm' => 'Budget'
+        'realm' => 'Budget',
         'users' => [
-            
-        ]
+
+        ],
     ],
     'database' => [
         'driver' => 'pdo_mysql',

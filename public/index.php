@@ -25,7 +25,7 @@ if (file_exists(ROOT_DIR . '/config/parameters.php')) {
 $settings = array_replace_recursive(
     [
         'displayErrorDetails' => true,
-        'enableSecurity' => true,
+        'enableSecurity' => false,
         'allowedResources' => [
             'budget', 'categories'
         ]
@@ -96,6 +96,11 @@ $container['Dime\Server\Middleware\ResourceType'] = function (ContainerInterface
 // App
 
 $app = new \Slim\App($container);
+
+$app->get('/', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
+    $response->getBody()->write(file_get_contents('index.html'));
+    return $response;
+});
 
 $app->get('/apidoc[/{resource}]', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
     $metadata = $this->get('metadata');
