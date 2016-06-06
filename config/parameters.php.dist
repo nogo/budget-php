@@ -1,0 +1,18 @@
+<?php
+
+return [
+    'auth' => [
+        'realm' => 'Budget'
+        'users' => [
+            
+        ]
+    ],
+    'database' => [
+        'driver' => 'pdo_mysql',
+        'dbname' => 'budget',
+        'user' => 'root',
+        'password' => '',
+        'host' => 'localhost',
+        'charset' => 'utf8',
+    ]
+];

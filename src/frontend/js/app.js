@@ -125,7 +125,7 @@ numeral.language('de');
           header = item.date;
           result.push(m('div.collection-header', moment(header).format('DD.MM.YYYY')));
         }
-        
+
         if (!sum[item.type]) {
           sum[item.type] = 0;
         }
@@ -135,19 +135,18 @@ numeral.language('de');
         return result;
       });
 
-      if (sum.income && sum.spend) {
-        result.unshift(viewBudgetListItem(undefined, 'Summe', {
-          amount: sum.income - sum.spend
-        }));
-      }
+
+      var total = 0;
       if (sum.spend) {
-        result.unshift(viewBudgetListItem(undefined, 'Ausgaben', {
-          amount: sum.spend
-        }));
+        total -= sum.spend;
       }
       if (sum.income) {
-        result.unshift(viewBudgetListItem(undefined, 'Einnahmen', {
-          amount: sum.income
+        total += sum.income;
+      }
+
+      if (sum.spend) {
+        result.unshift(viewBudgetListItem(undefined, 'Gesamt', {
+          amount: total
         }));
       }
     } else {
@@ -171,7 +170,7 @@ numeral.language('de');
         var param = m.route.param('param');
         if (param) {
           var match = param.match(/(\d{4}\-\d{2})?\/?(\d+)?/);
-          
+
           if (match[1] !== undefined) {
             scope.currentDate = match[1];
           }
@@ -293,7 +292,7 @@ numeral.language('de');
             ),
             m('.row', [
               m('.col.s6', [
-                m('input#type-spend', { 
+                m('input#type-spend', {
                   type: 'radio',
                   name: 'type',
                   value: 'spend',
@@ -303,7 +302,7 @@ numeral.language('de');
                 m('label', { for: 'type-spend'}, 'Ausgabe')
               ]),
               m('.col.s6', [
-                m('input#type-income', { 
+                m('input#type-income', {
                   type: 'radio',
                   name: 'type',
                   value: 'income',

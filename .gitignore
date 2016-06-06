@@ -1,6 +1,4 @@
-/bin
-/app/parameters.yml
+/config/parameters.php
 /data
 /vendor
-/nbproject
 /public/manifest.webapp

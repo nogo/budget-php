@@ -2,14 +2,18 @@
   "name": "nogo/budget",
   "description": "Budget management",
   "require": {
-    "php": ">=5.4.0",
-    "nogo/framework": "*",
-    "nogo/api": "*"
+      "php": "^5.6|^7.0",
+      "slim/slim": "^3.3",
+      "doctrine/dbal": "^2.5",
+      "doctrine/migrations": "^1.4"
   },
   "autoload": {
-    "psr-0": {
-      "": "src/"
-    }
+      "psr-4": {
+          "Dime\\Server\\": "src/server/"
+      },
+      "files": [
+          "src/server/Functional.php"
+      ]
   },
   "license": "MIT",
   "authors": [
@@ -17,6 +21,5 @@
       "name": "Danilo Kuehn",
       "email": "dk@nogo-software.de"
     }
-  ],
-  "minimum-stability": "dev"
+  ]
 }
