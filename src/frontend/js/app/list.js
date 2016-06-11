@@ -2,47 +2,48 @@ import m from 'mithril'
 import moment from 'moment'
 import viewBudgetListItem from './item.js'
 
-export default function budgetListView (budget, categories, currentDate) {
-    budget = budget || []
-    currentDate = currentDate || moment().format('YYYY-MM')
+let header
 
-    let header
-    let filtered = budget.filter(function(item) {
-        return moment(item.date).format('YYYY-MM') === currentDate
+function listCtrl (args) {
+  let date = m.prop(args.currentDate || moment().format('YYYY-MM'))
+  let budgetList = args.budget()
+  let result = []
+
+  let filteredList = budgetList.filter(item => date() === moment(item.date).format('YYYY-MM'))
+  if (!filteredList || filteredList.length <= 0) {
+    result.push(viewBudgetListItem('Keine Einträge gefunden.'))
+  }  else {
+    result = filteredList.map(item => {
+      let title = 'Nicht definiert'
+      var c = args.categories().find(c => c.id === item.category_id)
+      if (c) {
+          title = c.name
+      }
+      return viewBudgetListItem(title, item, date())
     })
-    let result = []
 
-    if (filtered.length > 0) {
-        result = filtered.map(function(item) {
-            let title = 'Nicht definiert'
-            let result = []
-
-            var c = categories.find(c => c.id === item.category_id)
-            if (c) {
-                title = c.name
-            }
-
-            if (!header || header != item.date) {
-                header = item.date
-                result.push(m('div.collection-header', moment(header).format('DD.MM.YYYY')))
-            }
-
-            result.push(viewBudgetListItem(title, item, currentDate))
-            return result
-        })
-
-        let total = filtered
-          .map(item => (item.type === 'spend' ? -1 : 1) * parseFloat(item.amount))
-          .reduce((prev, curr) => (prev || 0) + curr);
-        if (total > 0) {
-            result.unshift(viewBudgetListItem('Gesamt', {
-                amount: total
-            }))
-        }
-    } else {
-        result.push(viewBudgetListItem('Keine Einträge gefunden.'))
+    let total = filteredList
+      .map(item => (item.type === 'spend' ? -1 : 1) * parseFloat(item.amount))
+      .reduce((prev, curr) => (prev || 0) + curr);
+    if (total > 0) {
+      result.unshift(viewBudgetListItem('Gesamt', {
+          amount: total
+      }))
     }
-    result.unshift(m('div.collection-header.center-align', currentDate))
+  }
 
-    return m('div.collection.with-header', result)
+  this.date = date
+  this.results = m.prop(result)
+}
+
+function listView (ctrl) {
+  return m('div.collection.with-header', [
+    m('div.collection-header.center-align', ctrl.date()),
+    ctrl.results()
+  ])
+}
+
+export default {
+  controller: listCtrl,
+  view: listView
 }
