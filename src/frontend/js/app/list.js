@@ -2,34 +2,45 @@ import m from 'mithril'
 import moment from 'moment'
 import viewBudgetListItem from './item.js'
 
-let header
-
 function listCtrl (args) {
   let date = m.prop(args.currentDate || moment().format('YYYY-MM'))
   let budgetList = args.budget()
   let result = []
+  let header
 
-  let filteredList = budgetList.filter(item => date() === moment(item.date).format('YYYY-MM'))
+  let filteredList = budgetList
+    .filter(item => date() === moment(item.date).format('YYYY-MM'))
+    .sort((a, b) => {
+      let result = 0
+      if (moment(a.date).isAfter(b.date)) {
+        result = -1
+      } else if (moment(a.date).isBefore(b.date)) {
+        result = 1
+      }
+      return result
+    })
   if (!filteredList || filteredList.length <= 0) {
     result.push(viewBudgetListItem('Keine Einträge gefunden.'))
-  }  else {
-    result = filteredList.map(item => {
+  } else {
+    let total = filteredList
+      .map(item => (item.type === 'spend' ? -1 : 1) * parseFloat(item.amount))
+      .reduce((prev, curr) => (prev || 0) + curr)
+    result.push(viewBudgetListItem('Gesamt', { amount: total }))
+
+    filteredList.forEach(item => {
       let title = 'Nicht definiert'
       var c = args.categories().find(c => c.id === item.category_id)
       if (c) {
-          title = c.name
+        title = c.name
       }
-      return viewBudgetListItem(title, item, date())
-    })
 
-    let total = filteredList
-      .map(item => (item.type === 'spend' ? -1 : 1) * parseFloat(item.amount))
-      .reduce((prev, curr) => (prev || 0) + curr);
-    if (total > 0) {
-      result.unshift(viewBudgetListItem('Gesamt', {
-          amount: total
-      }))
-    }
+      if (!header || header !== item.date) {
+        header = item.date
+        result.push(m('div.collection-header', moment(header).format('DD.MM.YYYY')))
+      }
+
+      result.push(viewBudgetListItem(title, item, date()))
+    })
   }
 
   this.date = date

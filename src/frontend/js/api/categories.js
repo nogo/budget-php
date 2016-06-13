@@ -1,12 +1,13 @@
 import m from 'mithril'
 
-function fetchAll () {
+function fetch () {
   return m.request({
     method: 'GET',
-    url: 'api/categories'
+    url: 'api/categories',
+    initialValue: []
   })
 }
 
 export default {
-    fetch: fetchAll
+    fetch: fetch
 }

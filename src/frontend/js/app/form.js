@@ -2,7 +2,7 @@ import m from 'mithril'
 import moment from 'moment'
 import budget from '../api/budget.js'
 
-function add (e) {
+function add(e) {
     e.preventDefault()
     if (!scope.item.amount) {
         return
@@ -111,7 +111,10 @@ function formView (ctrl) {
       ),
       m('div.row', m('.col.s12', [
         m('label', { for: 'category' }, 'Kategorie'),
-        m('select#category.browser-default', { name: 'category_id' }, categoryOptions)
+        m('select#category.browser-default', {
+          name: 'category_id',
+          onchange: ctrl.update
+        }, categoryOptions)
       ])),
         formDescription(budgetItem, category),
         m('div.row',
