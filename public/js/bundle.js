@@ -2245,6 +2245,18 @@
 
 	var m = (mithril && typeof mithril === 'object' && 'default' in mithril ? mithril['default'] : mithril);
 
+	function fetch () {
+	  return m.request({
+	    method: 'GET',
+	    url: 'api/categories',
+	    initialValue: []
+	  })
+	}
+
+	var categories = {
+	    fetch: fetch
+	}
+
 	var moment = __commonjs(function (module, exports, global) {
 	//! moment.js
 	//! version : 2.13.0
@@ -6290,19 +6302,42 @@
 
 	var moment$1 = (moment && typeof moment === 'object' && 'default' in moment ? moment['default'] : moment);
 
-	function fetch () {
-	  return m.request({
-	    method: 'GET',
-	    url: 'api/categories',
-	    initialValue: []
-	  })
+	function parameters () {
+	  const parameter = m.route.param('param')
+	  return (parameter) ? parameter.match(/(\d{4}\-\d{2})?\/?(\d+)?/) : []
 	}
 
-	var categories = {
-	    fetch: fetch
+	function routeId () {
+	  const match = parameters()
+	  return match[2] ? parseInt(match[2], 10) : 0
 	}
 
-	let url = 'api/budget'
+	function routeDate () {
+	  const match = parameters()
+	  return match[1] ? match[1] : moment$1().format('YYYY-MM')
+	}
+
+	function redirect () {
+	  const match = parameters()
+
+	  if (match[1]) {
+	    m.route('/' + match[1])
+	  } else {
+	    m.route('/')
+	  }
+	}
+
+	let baseUrl = 'api/budget'
+
+	function sortByDate (a, b) {
+	  let result = 0
+	  if (moment$1(a.date).isAfter(b.date)) {
+	    result = -1
+	  } else if (moment$1(a.date).isBefore(b.date)) {
+	    result = 1
+	  }
+	  return result
+	}
 
 	function create () {
 	  return {
@@ -6314,23 +6349,39 @@
 	function fetch$1 () {
 	  return m.request({
 	    method: 'GET',
-	    url: url,
+	    url: baseUrl,
 	    initialValue: []
-	  })
+	  }).then(list => list.sort(sortByDate))
 	}
 
-	function persist () {
+	function persist (item) {
+	  if (!item || !item.amount) {
+	    return false
+	  }
+
+	  let method = 'POST'
+	  let url = baseUrl
+	  if (item.id) {
+	    method = 'PUT'
+	    url += '/' + item.id
+	  }
+
 	  return m.request({
-	    method: 'GET',
-	    url: url
-	  })
+	    method: method,
+	    url: url,
+	    data: item
+	  }).then(data => redirect())
 	}
 
-	function remove () {
+	function remove (item) {
+	  if (!item || !item.id) {
+	    return
+	  }
+
 	  return m.request({
-	    method: 'GET',
-	    url: url
-	  })
+	    method: 'DELETE',
+	    url: baseUrl + '/' + item.id
+	  }).then(data => redirect())
 	}
 
 	var budget = {
@@ -6341,64 +6392,73 @@
 	}
 
 	function formDescription (budgetItem, category) {
-	  let result = ''
-	  if (category && category.with_description == 1) {
-	    result = m('.row',
-	      m('.col.s12', [
-	        m('label', {
-	          for: 'description'
-	        }, 'Beschreibung'),
-	        m('input#description.text-input', {
-	          type: 'text',
-	          name: 'description',
-	          placeholder: 'Bemerkung',
-	          value: (budgetItem.description) ? budgetItem.description : ''
-	        })
-	      ])
-	    )
+	  if (!category || !category.with_description || category.with_description !== 1) {
+	    return ''
 	  }
-	  return result
+
+	  return m('.row',
+	    m('.col.s12', [
+	      m('label', { for: 'description' }, 'Beschreibung'),
+	      m('input#description.text-input', {
+	        type: 'text',
+	        name: 'description',
+	        placeholder: 'Bemerkung',
+	        oninput: m.withAttr('value', (value) => { budgetItem.description = value }),
+	        value: (budgetItem && budgetItem.description) ? budgetItem.description : ''
+	      })
+	    ])
+	  )
+	}
+
+	function formDeleteButton (budgetItem) {
+	  if (!budgetItem || !budgetItem.id) {
+	    return ''
+	  }
+
+	  return m('button.btn-floating.btn-large.red', {
+	    onclick: (e) => {
+	      if (e) e.preventDefault()
+	      return budget.remove(budgetItem)
+	    }
+	  }, m('i.large.mdi-action-delete'))
 	}
 
 	function formCtrl (args) {
-	  this.budgetItem = m.prop(args.item || budget.create())
-	  this.budgetList = args.budget
-	  this.categoryList = args.categories
-	}
+	  const currentId = routeId()
+	  let scope = {}
 
-	function formView (ctrl) {
-	  /*let category
-	  let categoriesList = scope.categories()
-
-	  if (!scope.item) {
-	    scope.item = budget.create()
+	  scope.findCategory = function (id) {
+	    return args.categories.find(item => item.id === id)
 	  }
 
-	  if (scope.item) {
-	    if (scope.item.category_id) {
-	      category = categoriesList.find(c => c.id = scope.item.category_id)
-	    } else if (categoriesList && categoriesList[0]) {
-	      scope.item.category_id = categoriesList[0].id
-	    }
-	    if (scope.item.id) {
-	      deleteBtn = m('button.btn-floating.btn-large.red', {
-	        onclick: scope.remove
-	      }, m('i.large.mdi-action-delete'))
-	    }
-	  }*/
-	  let budgetItem = ctrl.budgetItem()
-	  let category = { id: 1, name: 'Bäcker' }
-	  let categoryOptions = ctrl.categoryList().map(item => {
+	  scope.budgetItem = args.budget.find(item => item.id === currentId)
+	  if (!scope.budgetItem) {
+	    scope.budgetItem = budget.create()
+	    scope.budgetItem.category_id = args.categories[0].id
+	  }
+
+	  const category = scope.findCategory(scope.budgetItem.category_id)
+
+	  scope.categoryOptions = args.categories.map(item => {
 	    let attr = { value: item.id }
 	    if (category && item.id === category.id) {
 	      attr.selected = 'selected'
 	    }
 	    return m('option', attr, item.name)
 	  })
-	  let deleteBtn = ''
 
+	  scope.save = function (e) {
+	    if (e) e.preventDefault()
+
+	    budget.persist(scope.budgetItem)
+	    return true
+	  }
+	  return scope
+	}
+
+	function formView (ctrl) {
 	  return m('div.row.card-panel',
-	    m('form.col.s12', [
+	    m('form.col.s12', { onsubmit: ctrl.save }, [
 	      m('div.row',
 	        m('.col.s12', [
 	          m('label', { for: 'amount' }, 'Betrag'),
@@ -6410,7 +6470,8 @@
 	            required: '',
 	            step: 0.01,
 	            min: 0,
-	            value: budgetItem.amount
+	            onchange: m.withAttr('value', (value) => { ctrl.budgetItem.amount = parseFloat(value, 10) }),
+	            value: ctrl.budgetItem.amount ? ctrl.budgetItem.amount : ''
 	          })
 	        ])
 	      ),
@@ -6418,44 +6479,51 @@
 	        m('label', { for: 'category' }, 'Kategorie'),
 	        m('select#category.browser-default', {
 	          name: 'category_id',
-	          onchange: ctrl.update
-	        }, categoryOptions)
+	          onchange: (e) => {
+	            if (e) e.preventDefault()
+	            ctrl.budgetItem.category_id = parseInt(e.target.value, 10)
+	            return false
+	          }
+	        }, ctrl.categoryOptions)
 	      ])),
-	        formDescription(budgetItem, category),
-	        m('div.row',
-	            m('.col.s12', [
-	                m('label', { for: 'date' }, 'Datum'),
-	                m('input#date', {
-	                    type: 'date',
-	                    name: 'date',
-	                    value: moment$1(budgetItem.date).format('YYYY-MM-DD')
-	                })
-	            ])
-	        ),
-	        m('.row', [
-	            m('.col.s6', [
-	                m('input#type-spend', {
-	                    type: 'radio',
-	                    name: 'type',
-	                    value: 'spend',
-	                    checked: (budgetItem.type === 'spend')
-	                }),
-	                m('label', { for: 'type-spend' }, 'Ausgabe')
-	            ]),
-	            m('.col.s6', [
-	                m('input#type-income', {
-	                    type: 'radio',
-	                    name: 'type',
-	                    value: 'income',
-	                    checked: (budgetItem.type === 'income')
-	                }),
-	                m('label', { for: 'type-income' }, 'Einnahme')
-	            ])
-	        ]),
-	        m('div', [
-	            deleteBtn,
-	            m('.right', m('button.btn-floating.btn-large.green', { type: 'submit' }, m('i.large.mdi-action-done')))
+	      formDescription(ctrl.budgetItem, ctrl.findCategory(ctrl.budgetItem.category_id)),
+	      m('div.row',
+	        m('.col.s12', [
+	          m('label', { for: 'date' }, 'Datum'),
+	          m('input#date', {
+	            type: 'date',
+	            name: 'date',
+	            oninput: m.withAttr('value', (value) => { ctrl.budgetItem.date = moment$1(value).format('YYYY-MM-DD') }),
+	            value: moment$1(ctrl.budgetItem.date).format('YYYY-MM-DD')
+	          })
 	        ])
+	      ),
+	      m('.row', [
+	        m('.col.s6', [
+	          m('input#type-spend', {
+	            type: 'radio',
+	            name: 'type',
+	            value: 'spend',
+	            onchange: m.withAttr('value', (value) => { ctrl.budgetItem.type = value }),
+	            checked: (ctrl.budgetItem.type === 'spend')
+	          }),
+	          m('label', { for: 'type-spend' }, 'Ausgabe')
+	        ]),
+	        m('.col.s6', [
+	          m('input#type-income', {
+	            type: 'radio',
+	            name: 'type',
+	            value: 'income',
+	            onchange: m.withAttr('value', (value) => { ctrl.budgetItem.type = value }),
+	            checked: (ctrl.budgetItem.type === 'income')
+	          }),
+	          m('label', { for: 'type-income' }, 'Einnahme')
+	        ])
+	      ]),
+	      m('div', [
+	        formDeleteButton(ctrl.budgetItem),
+	        m('.right', m('button.btn-floating.btn-large.green', { type: 'submit' }, m('i.large.mdi-action-done')))
+	      ])
 	    ])
 	  )
 	}
@@ -6463,6 +6531,37 @@
 	var formComponent = {
 	  controller: formCtrl,
 	  view: formView
+	}
+
+	const dateFormat = 'YYYY-MM'
+
+	function nextMonth (date) {
+	  return moment$1(date, dateFormat)
+	    .startOf('month')
+	    .add(1, 'month')
+	    .format(dateFormat)
+	}
+
+	function lastMonth (date) {
+	  return moment$1(date, dateFormat)
+	    .startOf('month')
+	    .subtract(1, 'month')
+	    .format(dateFormat)
+	}
+
+	function navigationView (date) {
+	  const next = nextMonth(date)
+	  const last = lastMonth(date)
+	  return m('.row', [
+	    m('.col.s6',
+	      m('a.btn.grey', { href: '/' + last, config: m.route }, [
+	        m('i.mdi-navigation-arrow-back'), ' ', last
+	      ])),
+	    m('.col.s6.right-align',
+	      m('a.btn.grey', { href: '/' + next, config: m.route }, [
+	        next, ' ', m('i.mdi-navigation-arrow-forward')
+	      ]))
+	  ])
 	}
 
 	function budgetItemView (title, item, currentDate) {
@@ -6501,125 +6600,79 @@
 	  return m('a.collection-item.list-item' + itemClass, attr, result)
 	}
 
+	function total (list) {
+	  return list
+	    .map(item => (item.type === 'spend' ? -1 : 1) * parseFloat(item.amount))
+	    .reduce((prev, curr) => (prev || 0) + curr)
+	}
+
 	function listCtrl (args) {
-	  let date = m.prop(args.currentDate || moment$1().format('YYYY-MM'))
-	  let budgetList = args.budget()
-	  let result = []
-	  let header
-
-	  let filteredList = budgetList
-	    .filter(item => date() === moment$1(item.date).format('YYYY-MM'))
-	    .sort((a, b) => {
-	      let result = 0
-	      if (moment$1(a.date).isAfter(b.date)) {
-	        result = -1
-	      } else if (moment$1(a.date).isBefore(b.date)) {
-	        result = 1
-	      }
-	      return result
-	    })
-	  if (!filteredList || filteredList.length <= 0) {
-	    result.push(budgetItemView('Keine Einträge gefunden.'))
-	  } else {
-	    let total = filteredList
-	      .map(item => (item.type === 'spend' ? -1 : 1) * parseFloat(item.amount))
-	      .reduce((prev, curr) => (prev || 0) + curr)
-	    result.push(budgetItemView('Gesamt', { amount: total }))
-
-	    filteredList.forEach(item => {
+	  const date = routeDate()
+	  return {
+	    date: date,
+	    list: args.budget.filter(item => date === moment$1(item.date).format(dateFormat)),
+	    categoryName: function (id) {
 	      let title = 'Nicht definiert'
-	      var c = args.categories().find(c => c.id === item.category_id)
-	      if (c) {
-	        title = c.name
+	      var category = args.categories.find(c => c.id === id)
+	      if (category) {
+	        title = category.name
 	      }
-
-	      if (!header || header !== item.date) {
-	        header = item.date
-	        result.push(m('div.collection-header', moment$1(header).format('DD.MM.YYYY')))
-	      }
-
-	      result.push(budgetItemView(title, item, date()))
-	    })
+	      return title
+	    }
 	  }
-
-	  this.date = date
-	  this.results = m.prop(result)
 	}
 
 	function listView (ctrl) {
+	  let header
+	  if (!ctrl.list || ctrl.list.length <= 0) {
+	    return m('div.collection.with-header', [
+	      m('div.collection-header.center-align', ctrl.date),
+	      budgetItemView('Keine Einträge gefunden.')
+	    ])
+	  }
+
+	  var items = []
+	  ctrl.list.forEach(item => {
+	    if (!header || header !== item.date) {
+	      header = item.date
+	      items.push(m('div.collection-header', moment$1(header).format('DD.MM.YYYY')))
+	    }
+
+	    items.push(budgetItemView(ctrl.categoryName(item.category_id), item, ctrl.date))
+	  })
+
 	  return m('div.collection.with-header', [
-	    m('div.collection-header.center-align', ctrl.date()),
-	    ctrl.results()
+	    m('div.collection-header.center-align', ctrl.date),
+	    budgetItemView('Gesamt', { amount: total(ctrl.list) }),
+	    items
 	  ])
 	}
 
 	var budgetComponent = {
 	  controller: listCtrl,
-	  view: listView
-	}
-
-	function navigationCtrl (args) {
-	  const date = moment$1(args.currentDate, 'YYYY-MM').startOf('month')
-	  this.last = m.prop(date.clone().subtract(1, 'month').format('YYYY-MM'))
-	  this.next = m.prop(date.clone().add(1, 'month').format('YYYY-MM'))
-	}
-
-	function navigationView (ctrl) {
-	  return m('.row', [
-	    m('.col.s6',
-	      m('a.btn.grey', { href: '/' + ctrl.last(), config: m.route }, [
-	        m('i.mdi-navigation-arrow-back'), ' ', ctrl.last()
-	      ])),
-	    m('.col.s6.right-align',
-	      m('a.btn.grey', { href: '/' + ctrl.next(), config: m.route }, [
-	        ctrl.next(), ' ', m('i.mdi-navigation-arrow-forward')
-	      ]))
-	  ])
-	}
-
-	var navigationComponent = {
-	  controller: navigationCtrl,
-	  view: navigationView
-	}
-
-	function selectCurrentItem (id, budgetList) {
-	  if (!id || !budgetList) {
-	    return budget.create()
-	  }
-
-	  return budgetList().find(item => id === item.id)
+	  view: listView,
+	  itemView: budgetItemView
 	}
 
 	const mainComponent = {
 	  controller: function () {
 	    this.categoryList = categories.fetch()
 	    this.budgetList = budget.fetch()
-
-	    const parameter = m.route.param('param')
-	    const match = (parameter) ? parameter.match(/(\d{4}\-\d{2})?\/?(\d+)?/) : []
-	    this.currentDate = match[1] ? match[1] : moment$1().format('YYYY-MM')
-	    this.currentItem = match[2] ? match[2] : 0
-
-	    // TODO redirect if parameter not correct
 	  },
 	  view: function (ctrl) {
 	    return m('div.row', [
 	      m('div.col.s12.m5.l4',
 	        m.component(formComponent, {
-	          item: selectCurrentItem(ctrl.currentItem, ctrl.budgetList),
-	          budget: ctrl.budgetList,
-	          categories: ctrl.categoryList
+	          budget: ctrl.budgetList(),
+	          categories: ctrl.categoryList()
 	        })
 	      ),
 	      m('div.col.s12.m7.l8', [
 	        m.component(budgetComponent, {
-	          budget: ctrl.budgetList,
-	          categories: ctrl.categoryList,
-	          currentDate: ctrl.currentDate
+	          budget: ctrl.budgetList(),
+	          categories: ctrl.categoryList()
 	        }),
-	        m.component(navigationComponent, {
-	          currentDate: ctrl.currentDate
-	        })
+	        navigationView(routeDate())
 	      ])
 	    ])
 	  }

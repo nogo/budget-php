@@ -1,6 +1,6 @@
 import m from 'mithril'
 
-function fetch () {
+export function fetch () {
   return m.request({
     method: 'GET',
     url: 'api/categories',

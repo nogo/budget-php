@@ -1,58 +1,62 @@
 import m from 'mithril'
 import moment from 'moment'
+import { redirect } from '../helper/route'
 
-let url = 'api/budget'
+let baseUrl = 'api/budget'
 
-function create () {
+function sortByDate (a, b) {
+  let result = 0
+  if (moment(a.date).isAfter(b.date)) {
+    result = -1
+  } else if (moment(a.date).isBefore(b.date)) {
+    result = 1
+  }
+  return result
+}
+
+export function create () {
   return {
     type: 'spend',
     date: moment().format('YYYY-MM-DD')
   }
 }
 
-function fetch () {
+export function fetch () {
   return m.request({
     method: 'GET',
-    url: url,
+    url: baseUrl,
     initialValue: []
-  }).then((list) => list.sort((a, b) => {
-    let result = 0
-    if (moment(a.date).isAfter(b.date)) {
-      result = -1
-    } else if (moment(a.date).isBefore(b.date)) {
-      result = 1
-    }
-    return result
-  }))
+  }).then(list => list.sort(sortByDate))
 }
 
-function persist (item) {
+export function persist (item) {
   if (!item || !item.amount) {
     return false
   }
 
   let method = 'POST'
+  let url = baseUrl
   if (item.id) {
     method = 'PUT'
-    url = url + '/' + item.id
+    url += '/' + item.id
   }
 
   return m.request({
     method: method,
     url: url,
     data: item
-  })
+  }).then(data => redirect())
 }
 
-function remove (item) {
+export function remove (item) {
   if (!item || !item.id) {
     return
   }
 
   return m.request({
     method: 'DELETE',
-    url: url + '/' + item.id
-  })
+    url: baseUrl + '/' + item.id
+  }).then(data => redirect())
 }
 
 export default {

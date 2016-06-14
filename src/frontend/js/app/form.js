@@ -1,6 +1,7 @@
 import m from 'mithril'
 import moment from 'moment'
 import budget from '../api/budget.js'
+import { routeId } from '../helper/route.js'
 
 function formDescription (budgetItem, category) {
   if (!category || !category.with_description || category.with_description !== 1) {
@@ -21,44 +22,55 @@ function formDescription (budgetItem, category) {
   )
 }
 
-function formCtrl (args) {
-  console.log(args, 'test')
-  this.budgetItem = m.prop(args.item || budget.create())
-  this.budgetList = args.budget
-  this.categoryList = args.categories
+function formDeleteButton (budgetItem) {
+  if (!budgetItem || !budgetItem.id) {
+    return ''
+  }
+
+  return m('button.btn-floating.btn-large.red', {
+    onclick: (e) => {
+      if (e) e.preventDefault()
+      return budget.remove(budgetItem)
+    }
+  }, m('i.large.mdi-action-delete'))
 }
 
-function formView (ctrl) {
-  let budgetItem = ctrl.budgetItem()
-  if (budgetItem && !budgetItem.category_id) {
-    budgetItem.category_id = ctrl.categoryList()[0].id
+function formCtrl (args) {
+  const currentId = routeId()
+  let scope = {}
+
+  scope.findCategory = function (id) {
+    return args.categories.find(item => item.id === id)
   }
-  let category = ctrl.categoryList().find(item => item.id === budgetItem.category_id)
-  let categoryOptions = ctrl.categoryList().map(item => {
+
+  scope.budgetItem = args.budget.find(item => item.id === currentId)
+  if (!scope.budgetItem) {
+    scope.budgetItem = budget.create()
+    scope.budgetItem.category_id = args.categories[0].id
+  }
+
+  const category = scope.findCategory(scope.budgetItem.category_id)
+
+  scope.categoryOptions = args.categories.map(item => {
     let attr = { value: item.id }
     if (category && item.id === category.id) {
       attr.selected = 'selected'
     }
     return m('option', attr, item.name)
   })
-  let deleteBtn = ''
-  if (budgetItem && budgetItem.id) {
-    deleteBtn = m('button.btn-floating.btn-large.red', {
-      onclick: (e) => {
-        if (e) e.preventDefault()
-        return budget.remove(budgetItem)
-      }
-    }, m('i.large.mdi-action-delete'))
-  }
 
+  scope.save = function (e) {
+    if (e) e.preventDefault()
+
+    budget.persist(scope.budgetItem)
+    return true
+  }
+  return scope
+}
+
+function formView (ctrl) {
   return m('div.row.card-panel',
-    m('form.col.s12', { onsubmit: (e) => {
-      if (e) e.preventDefault()
-      ctrl.budgetItem(budgetItem)
-      if (budget.persist(budgetItem)) {
-        m.route('/')
-      }
-    }}, [
+    m('form.col.s12', { onsubmit: ctrl.save }, [
       m('div.row',
         m('.col.s12', [
           m('label', { for: 'amount' }, 'Betrag'),
@@ -70,8 +82,8 @@ function formView (ctrl) {
             required: '',
             step: 0.01,
             min: 0,
-            onchange: m.withAttr('value', (value) => { budgetItem.amount = parseFloat(value, 10) }),
-            value: budgetItem.amount
+            onchange: m.withAttr('value', (value) => { ctrl.budgetItem.amount = parseFloat(value, 10) }),
+            value: ctrl.budgetItem.amount ? ctrl.budgetItem.amount : ''
           })
         ])
       ),
@@ -79,19 +91,22 @@ function formView (ctrl) {
         m('label', { for: 'category' }, 'Kategorie'),
         m('select#category.browser-default', {
           name: 'category_id',
-          'data-type': 'integer',
-          onchange: m.withAttr('value', (value) => { budgetItem.category_id = parseInt(value, 10) })
-        }, categoryOptions)
+          onchange: (e) => {
+            if (e) e.preventDefault()
+            ctrl.budgetItem.category_id = parseInt(e.target.value, 10)
+            return false
+          }
+        }, ctrl.categoryOptions)
       ])),
-      formDescription(budgetItem, category),
+      formDescription(ctrl.budgetItem, ctrl.findCategory(ctrl.budgetItem.category_id)),
       m('div.row',
         m('.col.s12', [
           m('label', { for: 'date' }, 'Datum'),
           m('input#date', {
             type: 'date',
             name: 'date',
-            oninput: m.withAttr('value', (value) => { budgetItem.date = moment(value).format('YYYY-MM-DD') }),
-            value: moment(budgetItem.date).format('YYYY-MM-DD')
+            oninput: m.withAttr('value', (value) => { ctrl.budgetItem.date = moment(value).format('YYYY-MM-DD') }),
+            value: moment(ctrl.budgetItem.date).format('YYYY-MM-DD')
           })
         ])
       ),
@@ -101,8 +116,8 @@ function formView (ctrl) {
             type: 'radio',
             name: 'type',
             value: 'spend',
-            onchange: m.withAttr('value', (value) => { budgetItem.type = value }),
-            checked: (budgetItem.type === 'spend')
+            onchange: m.withAttr('value', (value) => { ctrl.budgetItem.type = value }),
+            checked: (ctrl.budgetItem.type === 'spend')
           }),
           m('label', { for: 'type-spend' }, 'Ausgabe')
         ]),
@@ -111,14 +126,14 @@ function formView (ctrl) {
             type: 'radio',
             name: 'type',
             value: 'income',
-            onchange: m.withAttr('value', (value) => { budgetItem.type = value }),
-            checked: (budgetItem.type === 'income')
+            onchange: m.withAttr('value', (value) => { ctrl.budgetItem.type = value }),
+            checked: (ctrl.budgetItem.type === 'income')
           }),
           m('label', { for: 'type-income' }, 'Einnahme')
         ])
       ]),
       m('div', [
-        deleteBtn,
+        formDeleteButton(ctrl.budgetItem),
         m('.right', m('button.btn-floating.btn-large.green', { type: 'submit' }, m('i.large.mdi-action-done')))
       ])
     ])

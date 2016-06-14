@@ -1,26 +1,33 @@
 import m from 'mithril'
 import moment from 'moment'
 
-function navigationCtrl (args) {
-  const date = moment(args.currentDate, 'YYYY-MM').startOf('month')
-  this.last = m.prop(date.clone().subtract(1, 'month').format('YYYY-MM'))
-  this.next = m.prop(date.clone().add(1, 'month').format('YYYY-MM'))
+export const dateFormat = 'YYYY-MM'
+
+export function nextMonth (date) {
+  return moment(date, dateFormat)
+    .startOf('month')
+    .add(1, 'month')
+    .format(dateFormat)
 }
 
-function navigationView (ctrl) {
+export function lastMonth (date) {
+  return moment(date, dateFormat)
+    .startOf('month')
+    .subtract(1, 'month')
+    .format(dateFormat)
+}
+
+export default function navigationView (date) {
+  const next = nextMonth(date)
+  const last = lastMonth(date)
   return m('.row', [
     m('.col.s6',
-      m('a.btn.grey', { href: '/' + ctrl.last(), config: m.route }, [
-        m('i.mdi-navigation-arrow-back'), ' ', ctrl.last()
+      m('a.btn.grey', { href: '/' + last, config: m.route }, [
+        m('i.mdi-navigation-arrow-back'), ' ', last
       ])),
     m('.col.s6.right-align',
-      m('a.btn.grey', { href: '/' + ctrl.next(), config: m.route }, [
-        ctrl.next(), ' ', m('i.mdi-navigation-arrow-forward')
+      m('a.btn.grey', { href: '/' + next, config: m.route }, [
+        next, ' ', m('i.mdi-navigation-arrow-forward')
       ]))
   ])
-}
-
-export default {
-  controller: navigationCtrl,
-  view: navigationView
 }
