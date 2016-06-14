@@ -105,7 +105,7 @@ function formView (ctrl) {
           m('input#date', {
             type: 'date',
             name: 'date',
-            oninput: m.withAttr('value', (value) => { ctrl.budgetItem.date = moment(value).format('YYYY-MM-DD') }),
+            onchange: m.withAttr('value', (value) => { ctrl.budgetItem.date = moment(value).format('YYYY-MM-DD') }),
             value: moment(ctrl.budgetItem.date).format('YYYY-MM-DD')
           })
         ])

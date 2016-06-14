@@ -6493,7 +6493,7 @@
 	          m('input#date', {
 	            type: 'date',
 	            name: 'date',
-	            oninput: m.withAttr('value', (value) => { ctrl.budgetItem.date = moment$1(value).format('YYYY-MM-DD') }),
+	            onchange: m.withAttr('value', (value) => { ctrl.budgetItem.date = moment$1(value).format('YYYY-MM-DD') }),
 	            value: moment$1(ctrl.budgetItem.date).format('YYYY-MM-DD')
 	          })
 	        ])
