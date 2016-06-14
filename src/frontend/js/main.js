@@ -6,6 +6,9 @@ import formComponent from './app/form.js'
 import budgetComponent from './app/list.js'
 import navigationComponent from './app/navigation.js'
 
+let currentDate = moment().format('YYYY-MM')
+let currentId = 0
+
 function selectCurrentItem (id, budgetList) {
   if (!id || !budgetList) {
     return budget.create()
@@ -14,23 +17,24 @@ function selectCurrentItem (id, budgetList) {
   return budgetList().find(item => id === item.id)
 }
 
+function checkRoute () {
+  const parameter = m.route.param('param')
+  const match = (parameter) ? parameter.match(/(\d{4}\-\d{2})?\/?(\d+)?/) : []
+  currentDate = match[1] ? match[1] : moment().format('YYYY-MM')
+  currentId = match[2] ? match[2] : 0
+}
+
 const mainComponent = {
   controller: function () {
     this.categoryList = categories.fetch()
     this.budgetList = budget.fetch()
-
-    const parameter = m.route.param('param')
-    const match = (parameter) ? parameter.match(/(\d{4}\-\d{2})?\/?(\d+)?/) : []
-    this.currentDate = match[1] ? match[1] : moment().format('YYYY-MM')
-    this.currentItem = match[2] ? match[2] : 0
-
-    // TODO redirect if parameter not correct
   },
   view: function (ctrl) {
+    checkRoute()
     return m('div.row', [
       m('div.col.s12.m5.l4',
         m.component(formComponent, {
-          item: selectCurrentItem(ctrl.currentItem, ctrl.budgetList),
+          item: selectCurrentItem(currentId, ctrl.budgetList),
           budget: ctrl.budgetList,
           categories: ctrl.categoryList
         })
@@ -39,10 +43,10 @@ const mainComponent = {
         m.component(budgetComponent, {
           budget: ctrl.budgetList,
           categories: ctrl.categoryList,
-          currentDate: ctrl.currentDate
+          currentDate: currentDate
         }),
         m.component(navigationComponent, {
-          currentDate: ctrl.currentDate
+          currentDate: currentDate
         })
       ])
     ])

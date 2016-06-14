@@ -8,17 +8,7 @@ function listCtrl (args) {
   let result = []
   let header
 
-  let filteredList = budgetList
-    .filter(item => date() === moment(item.date).format('YYYY-MM'))
-    .sort((a, b) => {
-      let result = 0
-      if (moment(a.date).isAfter(b.date)) {
-        result = -1
-      } else if (moment(a.date).isBefore(b.date)) {
-        result = 1
-      }
-      return result
-    })
+  let filteredList = budgetList.filter(item => date() === moment(item.date).format('YYYY-MM'))
   if (!filteredList || filteredList.length <= 0) {
     result.push(viewBudgetListItem('Keine Einträge gefunden.'))
   } else {
