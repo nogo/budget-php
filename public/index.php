@@ -93,6 +93,12 @@ $container['Dime\Server\Middleware\ResourceType'] = function (ContainerInterface
 
 // Repositories
 
+$container['budget_filter'] = function () {
+    return new \Dime\Server\Filter([
+        new \Dime\Server\Filter\DateFilter()
+    ]);
+};
+
 // App
 
 $app = new \Slim\App($container);
@@ -149,9 +155,15 @@ $app->group('/api', function () {
 
     $this->get('/{resource}', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
         $repository = $this->get('repository')->setName($args['resource']);
+        $by = $this->get('uri')->getQueryParam($request, 'by', []);
+
+        $filter = [];
+        if ($this->has($args['resource'] . '_filter')) {
+            $filter = $this->get($args['resource'] . '_filter')->build($by);
+        }
 
         try {
-            $result = $repository->findAll();
+            $result = $repository->findAll($filter);
         } catch (\Exception $ex) {
             throw new NotFoundException($request, $response);
         }

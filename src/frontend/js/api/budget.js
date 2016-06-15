@@ -1,6 +1,7 @@
 import m from 'mithril'
 import moment from 'moment'
 import { redirect } from '../helper/route'
+import { notify } from '../app/notifier'
 
 let baseUrl = 'api/budget'
 
@@ -21,12 +22,25 @@ export function create () {
   }
 }
 
-export function fetch () {
+export function fetch (date) {
+  let data = {}
+  if (date) {
+    data['by'] = {
+      'date': date
+    }
+  }
   return m.request({
     method: 'GET',
     url: baseUrl,
+    data: data,
     initialValue: []
-  }).then(list => list.sort(sortByDate))
+  }).then(
+    list => list.sort(sortByDate),
+    error => {
+      notify('404 - ' + error.message, 'error')
+      return []
+    }
+  )
 }
 
 export function persist (item) {

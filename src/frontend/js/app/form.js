@@ -46,7 +46,9 @@ function formCtrl (args) {
   scope.budgetItem = args.budget.find(item => item.id === currentId)
   if (!scope.budgetItem) {
     scope.budgetItem = budget.create()
-    scope.budgetItem.category_id = args.categories[0].id
+    if (args.categories && args.categories[0]) {
+      scope.budgetItem.category_id = args.categories[0].id
+    }
   }
 
   const category = scope.findCategory(scope.budgetItem.category_id)

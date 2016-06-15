@@ -6327,6 +6327,43 @@
 	  }
 	}
 
+	let notifications = []
+
+	function notifyItemView (item) {
+	  let attr = {}
+	  let itemClass = ''
+	  switch (item.type) {
+	    case 'error':
+	      itemClass = '.red-text'
+	      break
+	    default:
+	      itemClass = '.black-text'
+	  }
+	  return m('div.collection-item.list-item' + itemClass, attr, item.message)
+	}
+
+	function notifyView (ctrl) {
+	  if (notifications.length <= 0) {
+	    return m('')
+	  }
+
+	  return m('div.collection', notifications.map(item => notifyItemView(item)))
+	}
+
+	function notify (msg, type) {
+	  if (!msg) return
+
+	  notifications.push({
+	    'message': msg,
+	    'type': type || 'info',
+	    'date': moment$1()
+	  })
+	}
+
+	var notiferComponent = {
+	  view: notifyView
+	}
+
 	let baseUrl = 'api/budget'
 
 	function sortByDate (a, b) {
@@ -6346,12 +6383,25 @@
 	  }
 	}
 
-	function fetch$1 () {
+	function fetch$1 (date) {
+	  let data = {}
+	  if (date) {
+	    data['by'] = {
+	      'date': date
+	    }
+	  }
 	  return m.request({
 	    method: 'GET',
 	    url: baseUrl,
+	    data: data,
 	    initialValue: []
-	  }).then(list => list.sort(sortByDate))
+	  }).then(
+	    list => list.sort(sortByDate),
+	    error => {
+	      notify('404 - ' + error.message, 'error')
+	      return []
+	    }
+	  )
 	}
 
 	function persist (item) {
@@ -6434,7 +6484,9 @@
 	  scope.budgetItem = args.budget.find(item => item.id === currentId)
 	  if (!scope.budgetItem) {
 	    scope.budgetItem = budget.create()
-	    scope.budgetItem.category_id = args.categories[0].id
+	    if (args.categories && args.categories[0]) {
+	      scope.budgetItem.category_id = args.categories[0].id
+	    }
 	  }
 
 	  const category = scope.findCategory(scope.budgetItem.category_id)
@@ -6657,7 +6709,7 @@
 	const mainComponent = {
 	  controller: function () {
 	    this.categoryList = categories.fetch()
-	    this.budgetList = budget.fetch()
+	    this.budgetList = budget.fetch(routeDate())
 	  },
 	  view: function (ctrl) {
 	    return m('div.row', [
@@ -6668,6 +6720,7 @@
 	        })
 	      ),
 	      m('div.col.s12.m7.l8', [
+	        m.component(notiferComponent),
 	        m.component(budgetComponent, {
 	          budget: ctrl.budgetList(),
 	          categories: ctrl.categoryList()

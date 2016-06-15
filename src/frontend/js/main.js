@@ -3,13 +3,14 @@ import categories from './api/categories.js'
 import budget from './api/budget.js'
 import formComponent from './app/form.js'
 import budgetComponent from './app/list.js'
+import notiferComponent from './app/notifier.js'
 import navigation from './app/navigation.js'
 import { routeDate } from './helper/route.js'
 
 const mainComponent = {
   controller: function () {
     this.categoryList = categories.fetch()
-    this.budgetList = budget.fetch()
+    this.budgetList = budget.fetch(routeDate())
   },
   view: function (ctrl) {
     return m('div.row', [
@@ -20,6 +21,7 @@ const mainComponent = {
         })
       ),
       m('div.col.s12.m7.l8', [
+        m.component(notiferComponent),
         m.component(budgetComponent, {
           budget: ctrl.budgetList(),
           categories: ctrl.categoryList()
