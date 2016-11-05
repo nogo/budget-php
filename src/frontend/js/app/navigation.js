@@ -23,11 +23,11 @@ export default function navigationView (date) {
   return m('.row', [
     m('.col.s6',
       m('a.btn.grey', { href: '/' + last, config: m.route }, [
-        m('i.mdi-navigation-arrow-back'), ' ', last
+        m('i.material-icons.left', 'arrow_back'), last
       ])),
     m('.col.s6.right-align',
       m('a.btn.grey', { href: '/' + next, config: m.route }, [
-        next, ' ', m('i.mdi-navigation-arrow-forward')
+        m('i.material-icons.right', 'arrow_forward'), next
       ]))
   ])
 }

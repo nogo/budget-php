@@ -82,7 +82,7 @@ function reviewTableView (title, year) {
 function reviewView (ctrl) {
   let review = calculateReview(ctrl.budgetList())
 
-  return m('div',
+  return m('div.container',
     Object
       .keys(review)
       .sort(function (a, b) {
