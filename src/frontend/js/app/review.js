@@ -74,7 +74,7 @@ function reviewTableView (title, year) {
         ])
       ]),
       m('tbody', Object.keys(months).map(key => reviewItemView(key, months[key].income, months[key].spend))),
-      m('tfoot', reviewItemView('', year.income, year.spend))
+      m('tfoot', reviewItemView('Gesamt', year.income, year.spend))
     ])
   ])
 }
