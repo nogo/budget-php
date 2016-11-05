@@ -4,6 +4,7 @@ import budget from './api/budget.js'
 import formComponent from './app/form.js'
 import budgetComponent from './app/list.js'
 import notiferComponent from './app/notifier.js'
+import reviewComponent from './app/review.js'
 import navigation from './app/navigation.js'
 import { routeDate } from './helper/route.js'
 
@@ -35,5 +36,7 @@ const mainComponent = {
 m.route.mode = 'hash'
 m.route(document.getElementById('app'), '/', {
   '/': mainComponent,
+  '/review': reviewComponent,
+  '/review/:param...': reviewComponent,
   '/:param...': mainComponent
 })

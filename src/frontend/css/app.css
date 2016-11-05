@@ -41,3 +41,11 @@ select:focus {
 .fixed {
     position: fixed;
 }
+
+tfoot {
+  border-top: 2px solid #9E9E9E;
+}
+
+tfoot td {
+  font-weight: bold;
+}

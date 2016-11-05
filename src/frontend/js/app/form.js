@@ -32,7 +32,7 @@ function formDeleteButton (budgetItem) {
       if (e) e.preventDefault()
       return budget.remove(budgetItem)
     }
-  }, m('i.large.mdi-action-delete'))
+  }, m('i.large.material-icons', 'delete'))
 }
 
 function formCtrl (args) {
@@ -136,7 +136,7 @@ function formView (ctrl) {
       ]),
       m('div', [
         formDeleteButton(ctrl.budgetItem),
-        m('.right', m('button.btn-floating.btn-large.green', { type: 'submit' }, m('i.large.mdi-action-done')))
+        m('.right', m('button.btn-floating.btn-large.green', { type: 'submit' }, m('i.large.material-icons', 'done')))
       ])
     ])
   )
