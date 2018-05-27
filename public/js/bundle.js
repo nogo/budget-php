@@ -6875,7 +6875,7 @@
 	function reviewCtrl$1 (args) {
 	  this.categoryList = categories.fetch()
 	  this.budgetList = review$1.fetch()
-	  this.year = routeYear()
+	  this.year = routeYear(args.year)
 	}
 
 	function calculateReview$1 (budget, categories, year) {
