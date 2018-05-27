@@ -1,17 +1,19 @@
 import m from 'mithril'
-import moment from 'moment'
+import { routeYear } from '../helper/route.js'
 import categories from '../api/categories.js'
 import review from '../api/review_category_monthly.js'
 
 function reviewCtrl (args) {
   this.categoryList = categories.fetch()
   this.budgetList = review.fetch()
+  this.year = routeYear()
 }
 
-function calculateReview (budget, categories) {
+function calculateReview (budget, categories, year) {
+  year = year || ''
   let review = {}
-  budget.forEach(item => {
-    let year = item.month.substring(0,4);
+
+  budget.filter(item => item.month.substring(0,4) == year).forEach(item => {
     let month = item.month;
     let category = categories.find(c => c.id === item.category_id)
 
@@ -75,20 +77,27 @@ function reviewTableView (title, month) {
           m('th', 'Summe')
         ])
       ]),
-      m('tbody', Object.keys(categories).map(key =>
-        reviewItemView(
-          key,
-          categories[key].income,
-          categories[key].spend
+      m('tbody',
+        Object
+        .keys(categories)
+        .sort(function (a, b) {
+          return b.localeCompare(a)
+        })
+        .map(key =>
+          reviewItemView(
+            key,
+            categories[key].income,
+            categories[key].spend
+          )
         )
-      )),
+      ),
       m('tfoot', reviewItemView('Gesamt', month.income, month.spend))
     ])
   ])
 }
 
 function reviewView (ctrl) {
-  let review = calculateReview(ctrl.budgetList(), ctrl.categoryList())
+  let review = calculateReview(ctrl.budgetList(), ctrl.categoryList(), ctrl.year)
 
   return m('div.container',
     Object

@@ -39,5 +39,6 @@ m.route(document.getElementById('app'), '/', {
   '/': mainComponent,
   '/review': reviewComponent,
   '/review/categories': reviewCategoryComponent,
+  '/review/:year/categories': reviewCategoryComponent,
   '/:param...': mainComponent
 })

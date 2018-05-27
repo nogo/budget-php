@@ -6317,6 +6317,10 @@
 	  return match[1] ? match[1] : moment$1().format('YYYY-MM')
 	}
 
+	function routeYear (year) {
+	  return year.match(/(\d{4})/) ? year : moment$1().format('YYYY')
+	}
+
 	function redirect () {
 	  const match = parameters()
 
@@ -6871,12 +6875,14 @@
 	function reviewCtrl$1 (args) {
 	  this.categoryList = categories.fetch()
 	  this.budgetList = review$1.fetch()
+	  this.year = routeYear()
 	}
 
-	function calculateReview$1 (budget, categories) {
+	function calculateReview$1 (budget, categories, year) {
+	  year = year || ''
 	  let review = {}
-	  budget.forEach(item => {
-	    let year = item.month.substring(0,4);
+
+	  budget.filter(item => item.month.substring(0,4) == year).forEach(item => {
 	    let month = item.month;
 	    let category = categories.find(c => c.id === item.category_id)
 
@@ -6940,20 +6946,27 @@
 	          m('th', 'Summe')
 	        ])
 	      ]),
-	      m('tbody', Object.keys(categories).map(key =>
-	        reviewItemView$1(
-	          key,
-	          categories[key].income,
-	          categories[key].spend
+	      m('tbody',
+	        Object
+	        .keys(categories)
+	        .sort(function (a, b) {
+	          return b.localeCompare(a)
+	        })
+	        .map(key =>
+	          reviewItemView$1(
+	            key,
+	            categories[key].income,
+	            categories[key].spend
+	          )
 	        )
-	      )),
+	      ),
 	      m('tfoot', reviewItemView$1('Gesamt', month.income, month.spend))
 	    ])
 	  ])
 	}
 
 	function reviewView$1 (ctrl) {
-	  let review = calculateReview$1(ctrl.budgetList(), ctrl.categoryList())
+	  let review = calculateReview$1(ctrl.budgetList(), ctrl.categoryList(), ctrl.year)
 
 	  return m('div.container',
 	    Object
@@ -7000,6 +7013,7 @@
 	  '/': mainComponent,
 	  '/review': reviewComponent,
 	  '/review/categories': reviewCategoryComponent,
+	  '/review/:year/categories': reviewCategoryComponent,
 	  '/:param...': mainComponent
 	})
 
