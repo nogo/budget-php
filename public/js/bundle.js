@@ -6950,7 +6950,7 @@
 	        Object
 	        .keys(categories)
 	        .sort(function (a, b) {
-	          return b.localeCompare(a)
+	          return a.localeCompare(b, 'de', {'sensitivity': 'base'})
 	        })
 	        .map(key =>
 	          reviewItemView$1(
