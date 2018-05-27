@@ -6706,15 +6706,52 @@
 	  itemView: budgetItemView
 	}
 
+	let baseUrl$1 = 'api/review_monthly'
+
+	function sortByDate$1 (a, b) {
+	  let result = 0
+	  if (moment$1(a.date).isAfter(b.date)) {
+	    result = -1
+	  } else if (moment$1(a.date).isBefore(b.date)) {
+	    result = 1
+	  }
+	  return result
+	}
+
+	function fetch$2 (date) {
+	  let data = {}
+	  if (date) {
+	    data['by'] = {
+	      'date': date
+	    }
+	  }
+	  return m.request({
+	    method: 'GET',
+	    url: baseUrl$1,
+	    data: data,
+	    initialValue: []
+	  }).then(
+	    list => list.sort(sortByDate$1),
+	    error => {
+	      notify('404 - ' + error.message, 'error')
+	      return []
+	    }
+	  )
+	}
+
+	var review = {
+	  fetch: fetch$2
+	}
+
 	function reviewCtrl (args) {
-	  this.budgetList = budget.fetch()
+	  this.budgetList = review.fetch()
 	}
 
 	function calculateReview (budget) {
 	  let review = {}
 	  budget.forEach(item => {
-	    let year = moment$1(item.date).format('YYYY')
-	    let date = moment$1(item.date).format('YYYY-MM')
+	    let year = item.month.substring(0,3);
+	    let date = item.month;
 
 	    if (!review[year]) {
 	      review[year] = {
@@ -6730,15 +6767,11 @@
 	        'spend': 0
 	      }
 	    }
-	    switch (item.type) {
-	      case 'income':
-	        review[year].income += item.amount
-	        review[year]['months'][date].income += item.amount
-	        break
-	      default:
-	        review[year].spend += item.amount
-	        review[year]['months'][date].spend += item.amount
-	    }
+
+	    review[year].income += item.income
+	    review[year]['months'][date].income = item.income
+	    review[year].spend += item.spend
+	    review[year]['months'][date].spend = item.spend
 	  })
 	  return review
 	}
