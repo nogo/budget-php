@@ -6877,34 +6877,32 @@
 	  let review = {}
 	  budget.forEach(item => {
 	    let year = item.month.substring(0,4);
-	    let date = item.month + '_' + item.category_id;
+	    let month = item.month;
 	    let category = categories.find(c => c.id === item.category_id)
 
-	    if (!review[year]) {
-	      review[year] = {
+	    if (!review[month]) {
+	      review[month] = {
 	        'income': 0,
 	        'spend': 0,
-	        'months': {}
+	        'categories': {}
 	      }
 	    }
 
-	    review[year]['months'][date] = {
-	      'category': category,
+	    review[month]['categories'][category] = {
 	      'income': item.income,
 	      'spend': item.spend
 	    }
 
 	    // total
-	    review[year].income += item.income
-	    review[year].spend += item.spend
+	    review[month].income += item.income
+	    review[month].spend += item.spend
 	  })
 	  return review
 	}
 
-	function reviewItemView$1 (title, income, outcome, category) {
+	function reviewItemView$1 (title, income, outcome) {
 	  income = income || 0
 	  outcome = outcome || 0
-	  category = category || ''
 
 	  let sum = income - outcome
 	  let itemClass = ''
@@ -6917,22 +6915,20 @@
 
 	  return m('tr', [
 	    m('td', title),
-	    m('td', category),
 	    m('td', income.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })),
 	    m('td', outcome.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })),
 	    m('td' + itemClass, sum.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }))
 	  ])
 	}
 
-	function reviewTableView$1 (title, year) {
+	function reviewTableView$1 (title, key) {
 	  let months = year['months']
 	  return m('div', [
 	    m('h4.center-align', title),
 	    m('table.striped', [
 	      m('thead', [
 	        m('tr', [
-	          m('th', 'Datum'),
-	          m('th', 'Kategory'),
+	          m('th', 'Kategorie'),
 	          m('th', 'Einnahme'),
 	          m('th', 'Ausgabe'),
 	          m('th', 'Summe')
@@ -6940,9 +6936,8 @@
 	      ]),
 	      m('tbody', Object.keys(months).map(key =>
 	        reviewItemView$1(
-	          key.substring(0,7),
+	          months[key].category,
 	          months[key].income,
-	          key.substring(0,7),
 	          months[key].spend
 	        )
 	      )),
