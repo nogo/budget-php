@@ -6665,7 +6665,7 @@
 	    list: args.budget.filter(item => date === moment$1(item.date).format(dateFormat)),
 	    categoryName: function (id) {
 	      let title = 'Nicht definiert'
-	      var category = args.categories.find(c => c.id === id)
+	      let category = args.categories.find(c => c.id === id)
 	      if (category) {
 	        title = category.name
 	      }
@@ -6883,7 +6883,7 @@
 	    if (category) {
 	      category = category.name
 	    } else {
-	      category = "Keine"
+	      category = 'Nicht definiert'
 	    }
 
 	    if (!review[month]) {
@@ -6894,7 +6894,7 @@
 	      }
 	    }
 
-	    review[month]['categories'][category.name] = {
+	    review[month]['categories'][category] = {
 	      'income': item.income,
 	      'spend': item.spend
 	    }

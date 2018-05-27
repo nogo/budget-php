@@ -18,7 +18,7 @@ function calculateReview (budget, categories) {
     if (category) {
       category = category.name
     } else {
-      category = "Keine"
+      category = 'Nicht definiert'
     }
 
     if (!review[month]) {
@@ -29,7 +29,7 @@ function calculateReview (budget, categories) {
       }
     }
 
-    review[month]['categories'][category.name] = {
+    review[month]['categories'][category] = {
       'income': item.income,
       'spend': item.spend
     }

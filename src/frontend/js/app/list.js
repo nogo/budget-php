@@ -52,7 +52,7 @@ function listCtrl (args) {
     list: args.budget.filter(item => date === moment(item.date).format(dateFormat)),
     categoryName: function (id) {
       let title = 'Nicht definiert'
-      var category = args.categories.find(c => c.id === id)
+      let category = args.categories.find(c => c.id === id)
       if (category) {
         title = category.name
       }
