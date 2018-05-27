@@ -1,16 +1,17 @@
 import m from 'mithril'
 import moment from 'moment'
 import budget from '../api/budget.js'
+import review from '../api/review_monthly.js'
 
 function reviewCtrl (args) {
-  this.budgetList = budget.fetch()
+  this.budgetList = review.fetch()
 }
 
 function calculateReview (budget) {
   let review = {}
   budget.forEach(item => {
-    let year = moment(item.date).format('YYYY')
-    let date = moment(item.date).format('YYYY-MM')
+    let year = item.month.substring(0,3);
+    let date = item.month;
 
     if (!review[year]) {
       review[year] = {
@@ -26,15 +27,11 @@ function calculateReview (budget) {
         'spend': 0
       }
     }
-    switch (item.type) {
-      case 'income':
-        review[year].income += item.amount
-        review[year]['months'][date].income += item.amount
-        break
-      default:
-        review[year].spend += item.amount
-        review[year]['months'][date].spend += item.amount
-    }
+
+    review[year].income += item.income
+    review[year]['months'][date].income = item.income
+    review[year].spend += item.spend
+    review[year]['months'][date].spend = item.spend
   })
   return review
 }

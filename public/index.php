@@ -27,7 +27,7 @@ $settings = array_replace_recursive(
         'displayErrorDetails' => true,
         'enableSecurity' => false,
         'allowedResources' => [
-            'budget', 'categories'
+            'budget', 'categories', 'review_monthly', 'review_category_monthly'
         ]
     ],
     $configuration
