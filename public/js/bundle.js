@@ -6750,7 +6750,7 @@
 	function calculateReview (budget) {
 	  let review = {}
 	  budget.forEach(item => {
-	    let year = item.month.substring(0,3);
+	    let year = item.month.substring(0,4);
 	    let date = item.month;
 
 	    if (!review[year]) {
@@ -6790,7 +6790,7 @@
 	  }
 
 	  return m('tr', [
-	    m('td', title),
+	    m('td', m('a', {href: '/review/' + title, config: m.route}, title)),
 	    m('td', income.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })),
 	    m('td', outcome.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })),
 	    m('td' + itemClass, sum.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }))
