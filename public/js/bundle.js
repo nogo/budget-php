@@ -6318,7 +6318,7 @@
 	}
 
 	function routeYear (year) {
-	  return year.match(/(\d{4})/) ? year : moment$1().format('YYYY')
+	  return year && year.match(/(\d{4})/) ? year : moment$1().format('YYYY')
 	}
 
 	function redirect () {
@@ -6801,7 +6801,7 @@
 	function reviewTableView (title, year) {
 	  let months = year['months']
 	  return m('div', [
-	    m('h4.center-align', title),
+	    m('h4.center-align', m('a', { href: '/review/' + title + '/category', config: m.route }, title)),
 	    m('table.striped', [
 	      m('thead', [
 	        m('tr', [
@@ -6875,7 +6875,7 @@
 	function reviewCtrl$1 (args) {
 	  this.categoryList = categories.fetch()
 	  this.budgetList = review$1.fetch()
-	  this.year = routeYear(args.year)
+	  this.year = routeYear(m.route.param('year'))
 	}
 
 	function calculateReview$1 (budget, categories, year) {

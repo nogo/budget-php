@@ -6,7 +6,7 @@ import review from '../api/review_category_monthly.js'
 function reviewCtrl (args) {
   this.categoryList = categories.fetch()
   this.budgetList = review.fetch()
-  this.year = routeYear(args.year)
+  this.year = routeYear(m.route.param('year'))
 }
 
 function calculateReview (budget, categories, year) {

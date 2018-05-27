@@ -17,7 +17,7 @@ export function routeDate () {
 }
 
 export function routeYear (year) {
-  return year.match(/(\d{4})/) ? year : moment().format('YYYY')
+  return year && year.match(/(\d{4})/) ? year : moment().format('YYYY')
 }
 
 export function redirect () {
