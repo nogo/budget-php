@@ -56,8 +56,8 @@ function reviewItemView (title, income, outcome) {
   ])
 }
 
-function reviewTableView (title, key) {
-  let months = year['months']
+function reviewTableView (title, month) {
+  let categories = month['categories']
   return m('div', [
     m('h4.center-align', title),
     m('table.striped', [
@@ -69,14 +69,14 @@ function reviewTableView (title, key) {
           m('th', 'Summe')
         ])
       ]),
-      m('tbody', Object.keys(months).map(key =>
+      m('tbody', Object.keys(categories).map(key =>
         reviewItemView(
-          months[key].category,
-          months[key].income,
-          months[key].spend
+          key,
+          categories[key].income,
+          categories[key].spend
         )
       )),
-      m('tfoot', reviewItemView('Gesamt', year.income, year.spend))
+      m('tfoot', reviewItemView('Gesamt', month.income, month.spend))
     ])
   ])
 }
