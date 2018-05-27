@@ -6801,7 +6801,7 @@
 	function reviewTableView (title, year) {
 	  let months = year['months']
 	  return m('div', [
-	    m('h4.center-align', m('a', { href: '/review/' + title + '/category', config: m.route }, title)),
+	    m('h4.center-align', m('a', { href: '/review/' + title + '/categories', config: m.route }, title)),
 	    m('table.striped', [
 	      m('thead', [
 	        m('tr', [
