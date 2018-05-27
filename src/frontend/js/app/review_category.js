@@ -15,6 +15,12 @@ function calculateReview (budget, categories) {
     let month = item.month;
     let category = categories.find(c => c.id === item.category_id)
 
+    if (category) {
+      category = category.name
+    } else {
+      category = "Keine"
+    }
+
     if (!review[month]) {
       review[month] = {
         'income': 0,
@@ -23,7 +29,7 @@ function calculateReview (budget, categories) {
       }
     }
 
-    review[month]['categories'][category] = {
+    review[month]['categories'][category.name] = {
       'income': item.income,
       'spend': item.spend
     }
